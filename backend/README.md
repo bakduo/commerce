@@ -23,9 +23,10 @@
 ![Vista handlebars](sample.png 'Vista de uso')
 
 
-# Develoment
+# Development
 
 Configura variables example:
+
 ```
 dev:
 
@@ -39,8 +40,9 @@ PORT=8081
 DBTYPE="file"
 DBPATH="db/store_test.json"
 ```
-```
+
 # Run dev
+
 ```
 
 npm run dev
@@ -50,9 +52,6 @@ npm run dev
 # Run test
 
 ```
-
 npm run test
-
-```
 
 ```
