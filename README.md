@@ -6,18 +6,19 @@ API project
 
 - [x] model
 - [x] controller
-- [ ] service
+- [x] service
 - [x] testing
-- [ ] frontend
+- [x] frontend
 - [x] storage
 - [x] fake-auth
 - [x] fake-role
+- [ ] OpenAPI spec
 
 # Backend
 
 - [x] NodeJS
 - [x] Express
-- [] TS
+- [ ] TS
 
 # Frontend
 
