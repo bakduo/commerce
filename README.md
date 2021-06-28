@@ -10,15 +10,17 @@ API project
 - [x] testing
 - [ ] frontend
 - [x] storage
-- [ ] auth
+- [x] fake-auth
+- [x] fake-role
 
 # Backend
 
 - [x] NodeJS
-- [x] ExpressJS
+- [x] Express
 - [] TS
 
 # Frontend
 
-- [ ] HTML5
-- [ ] Angular
+- [x] HTML5
+- [x] Bootstrap
+- [x] Angular
