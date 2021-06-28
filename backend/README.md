@@ -19,16 +19,15 @@
 - [ ] container
 - [ ] cluster
 
-# Sample view
-
-![Vista handlebars](sample.png 'Vista de uso')
-
 
 # Development
+
 
 Configura variables example:
 
 ```
+mkdir db;
+
 dev:
 
 PORT=8080
@@ -53,6 +52,8 @@ npm run dev
 # Run test
 
 ```
+mkdir db
+
 npm run test
 
 ```
