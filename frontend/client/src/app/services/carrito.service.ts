@@ -1,5 +1,7 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
+import { delay, map } from 'rxjs/operators';
 import { Producto } from './producto.service';
 
 
@@ -8,27 +10,62 @@ import { Producto } from './producto.service';
 })
 export class CarritoService {
 
-  productos:Carrito[] = [];
-
-  private productos$: Subject<Carrito[]> = new Subject<Carrito[]>();
+  private url = 'http://localhost:8080/api/carrito';
+  productos:number[] = [];
+  private productos$: Subject<number[]> = new Subject<number[]>();
 
   hash:string = '';
 
-  constructor() {
+  constructor(private http: HttpClient) {
     this.hash = "ryvb4aqbbsHireHWlPQfxxqDHQJo6YkVYhE9imKt0b8=";
   }
 
-  addproductoById(idx:number){
+  notifySubcriptor(idx:number){
+    this.productos.push(idx);
+    this.productos$.next(this.productos);
+  }
+
+  notifyDeleteSubcriptor(idx:number){
+    this.productos = this.productos.filter((item)=>item===idx);
+    this.productos$.next(this.productos);
+  }
+
+  update(p:number[]){
+    this.productos = p;
+    this.productos$.next(this.productos);
+  }
+
+
+  addProducto(idx:number){
+      return this.http.post(`${ this.url }/agregar/${idx}`,{});
+  }
+
+  private customResponse( carritoObj: any ) {
+
+    const productos: Carrito[] = [];
+    const productosId: number[] = [];
+
+    Object.keys( carritoObj ).forEach( key => {
+
+      const item: Carrito = carritoObj[key];
+      productos.push( item );
+    });
+
+    productos.forEach((item)=>productosId.push(Number(item.producto.id)));
+    return productosId;
 
   }
 
-  addProducto(c:Carrito){
+  getProductosUpdate(){
 
-      this.productos.push(c);
-      this.productos$.next(this.productos);
+    return this.http.get(`${ this.url }/listar`).pipe(
+      map( this.customResponse ),
+      delay(0)
+    );
+
   }
 
-  getProductos$():Observable<Carrito[]>{
+  getProductos$():Observable<number[]>{
     return this.productos$.asObservable();
   }
 
@@ -40,18 +77,20 @@ export class CarritoService {
     return this.hash;
   }
 
-  getProductos(id:string):Producto[]{
-    const items = this.productos.map((items)=>items.producto);
-    return items;
+  getSize(){
+    return this.productos.length;
   }
 
-  getProducto(id:number){
-    const item = this.productos.find((item)=>item.producto.id === id);
-    return item;
+  getProductos(): Observable<any>{
+    return this.http.get(`${ this.url }/listar`);
+  }
+
+  getProducto(id:number,name:string){
+    return this.http.get(`${ this.url }/listar/${this.hash}/${id}?name=${name}`);
   }
 
   deleteProducto(id:number){
-    this.productos = this.productos.filter((item)=>item.producto.id===id);
+    return this.http.delete(`${ this.url }/borrar/${id}`);
   }
 }
 

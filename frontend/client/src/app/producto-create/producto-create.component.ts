@@ -34,8 +34,15 @@ export class ProductoCreateComponent implements OnInit {
 
   save(){
     if ( this.formProducto.valid ) {
-      this._productoService.addProducto(this.formProducto.value);
-      this.router.navigate(["/productos"]);
+      this._productoService.addProducto(this.formProducto.value)
+      .subscribe(
+        response => {
+          this.router.navigate(["/productos"]);
+        },
+        error => {
+          console.log(error);
+        });
+
     }
   }
 

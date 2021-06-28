@@ -1,10 +1,16 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { map, delay } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductoService {
 
+
+  private url = 'http://localhost:8080/api/productos';
 
   private productos:Producto[] = [
 
@@ -32,30 +38,36 @@ export class ProductoService {
     },
   ]
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
-  getProductos():Producto[]{
-    return this.productos;
+  getProductos(): Observable<any> {
+    return this.http.get(`${ this.url }/listar`);
   }
 
   getProducto(id:number){
-    return this.productos[id];
+    return this.http.get(`${ this.url }/listar/${id}`);
   }
 
   addProducto(p:Producto){
-    this.productos.push(p);
+    let headersCustom = new HttpHeaders()
+    .set('content-type','application/json')
+    .append('x-api-custom','true');
+    return this.http.post(`${ this.url }/guardar`,p, {headers: headersCustom});
   }
 
-  updateProducto(p:Producto,index:number){
-      console.log(p);
-      let producto = this.productos.find((item)=>item.id===index);
-      if (producto){
-          this.productos[index] = p;
-      }
+  updateProducto(p:Producto,id:number){
+
+    let headersCustom = new HttpHeaders()
+    .set('content-type','application/json')
+    .append('x-api-custom','true');
+    return this.http.put(`${ this.url }/actualizar/${id}`,p,{headers: headersCustom});
   }
 
   deleteProducto(id:number){
-    this.productos = this.productos.filter((item)=>item.id===id);
+    let headersCustom = new HttpHeaders()
+    .set('content-type','application/json')
+    .append('x-api-custom','true');
+    return this.http.delete(`${ this.url }/borrar/${id}`,{headers: headersCustom});
   }
 
 }

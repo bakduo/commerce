@@ -1,0 +1,27 @@
+<h1>Productos <small>en el carrito</small></h1>
+<hr>
+
+
+<div class="card-columns">
+
+
+
+    <div class="card animated fadeIn fast" *ngFor="let item of productos; index as i">
+
+    <img class="card-img-top img-fluid" [src]="item.producto.thumbail" [alt]="item.producto.name">
+    <div class="card-body">
+      <h4 class="card-title">{{ item.producto.title }}</h4>
+      <p class="card-text"> {{ item.producto.description }} </p>
+      <p class="card-text"><small class="text-muted">{{ item.producto.stock }}</small></p>
+
+
+      <button (click)="eliminarProducto(i)"
+        type="button" class="btn btn-outline-primary btn-block">
+        Eliminar
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

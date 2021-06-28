@@ -15,8 +15,6 @@ export class ControlauthService {
     this.router.navigate(["/home"]);
   }
 
-
-
   getRole(){
     return this.role;
   }

@@ -1,3 +1,4 @@
+import { CarritoProductosComponent } from './carrito-productos/carrito-productos.component';
 import { HomeComponent } from './home/home.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
@@ -14,6 +15,7 @@ const routes: Routes = [
   { path: 'producto/:id', component: ProductoComponent },
   { path: 'producto-create', component: ProductoCreateComponent,canActivate:[ControlRoutesGuard] },
   { path: 'producto-edit/:id', component: ProductoEditComponent,canActivate:[ControlRoutesGuard] },
+  { path: 'carrito', component: CarritoProductosComponent },
   { path: '**', pathMatch: 'full', redirectTo: 'home' }
 ];
 

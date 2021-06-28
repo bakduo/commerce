@@ -16,7 +16,14 @@ export class ProductoComponent implements OnInit {
 
       this.activatedRoute.params.subscribe( params =>{
 
-        this.producto = this._productoService.getProducto(params['id']);
+        this.producto = this._productoService.getProducto(params['id']).subscribe(
+          product => {
+            this.producto = product;
+            console.log(product);
+          },
+          error => {
+            console.log(error);
+          });;
 
       });
      }

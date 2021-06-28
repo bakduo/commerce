@@ -5,7 +5,8 @@ backend/package-lock.json
 backend/.env
 backend/development.env
 backend/testing.env
-backend/db/*
+backend/production.env
+backend/db/*.json
 frontend/client/node_modules
 
 # compiled output

@@ -15,6 +15,8 @@ import { ProductoComponent } from './producto/producto.component';
 import { ProductoCreateComponent } from './producto-create/producto-create.component';
 import { ProductoEditComponent } from './producto-edit/producto-edit.component';
 import { CarritoService} from './services/carrito.service';
+import { HttpClientModule } from '@angular/common/http';
+import { CarritoProductosComponent } from './carrito-productos/carrito-productos.component';
 
 @NgModule({
   declarations: [
@@ -26,12 +28,14 @@ import { CarritoService} from './services/carrito.service';
     ProductoTarjetaComponent,
     ProductoComponent,
     ProductoCreateComponent,
-    ProductoEditComponent  ],
+    ProductoEditComponent,
+    CarritoProductosComponent  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    HttpClientModule
   ],
   providers: [ProductoService,ControlauthService,CarritoService],
   bootstrap: [AppComponent]

@@ -11,25 +11,24 @@
       Ver más...
     </button>
 
-
-    <div *ngIf="getRole()">
-
-    <button (click)="eliminarProducto()"
+    <button *ngIf="getRole()" (click)="eliminarProducto()"
       type="button" class="btn btn-outline-primary btn-block">
       Eliminar
     </button>
-
-     <button (click)="editarProducto()"
+    <button *ngIf="getRole()" (click)="editarProducto()"
       type="button" class="btn btn-outline-primary btn-block">
       Editar
     </button>
 
-    </div>
-
-  </div>
     <button (click)="agregarCarrito()"
       type="button" class="btn btn-outline-primary btn-block">
       agregar al carrito
     </button>
+
+  </div>
+
+
+
+
 
 </div>

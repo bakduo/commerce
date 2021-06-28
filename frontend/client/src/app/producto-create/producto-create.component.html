@@ -72,6 +72,17 @@
       </div>
     </div>
 
+    <div class="form-group row">
+      <label class="col-2 col-form-label">Imagen</label>
+      <div class="col">
+
+        <input class="form-control"
+               type="text"
+               placeholder="Imagen"
+               formControlName="thumbail">
+      </div>
+    </div>
+
 
   </div>
 
@@ -88,14 +99,3 @@
 </form>
 
 <hr>
-<pre>
-  Estado del formulario: {{ formProducto.valid }}
-  <br>
-  Status: {{ formProducto.status }}
-</pre>
-
-<pre>
-
-  {{ formProducto.value | json }}
-
-</pre>

@@ -10,15 +10,26 @@ import { ControlauthService } from '../services/controlauth.service';
 })
 export class NavbarComponent implements OnInit,OnDestroy {
 
-  productos:Carrito[] = [];
-  productosCarrito$:Observable<Carrito[]>;
+  productos:number[] = [];
+  productosCarrito$:Observable<number[]>;
   productosCarritoSubScription:Subscription;
 
-  constructor(private _controlService:ControlauthService,private _carritoService:CarritoService) { }
+  constructor(private _controlService:ControlauthService,private _carritoService:CarritoService) {
+  }
 
   ngOnInit(): void {
+
     this.productosCarrito$ = this._carritoService.getProductos$();
+
     this.productosCarritoSubScription = this.productosCarrito$.subscribe(items =>this.productos = items);
+
+    this._carritoService.getProductosUpdate().subscribe(
+      products => {
+        this._carritoService.update(products);
+      },
+      error => {
+        console.log(error);
+      });
   }
 
   changerole():void{

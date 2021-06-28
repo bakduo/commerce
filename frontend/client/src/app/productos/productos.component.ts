@@ -18,9 +18,17 @@ export class ProductosComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.productos = this._productoService.getProductos();
+
     this.role = this._controlService.getRole();
 
+    this._productoService.getProductos()
+      .subscribe(
+        products => {
+          this.productos = products;
+        },
+        error => {
+          console.log(error);
+        });
   }
 
   getRole(){

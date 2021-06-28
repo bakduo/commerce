@@ -15,6 +15,8 @@ const logger = require('./config/logger');
 
 const middlewareauth = require('./middleware/fakeauth');
 
+const cors = require('cors');
+
 const { port } = config.server;
 
 const requestId = require('express-request-id')();
@@ -34,6 +36,8 @@ app.use(express.urlencoded({ extended: true }));
 
 //Auth every request
 app.use(middlewareauth.fakeAuth);
+
+app.use(cors(config.server.cors.server));
 
 //app.use('/',routerProductos);//Ahora usa public para poder tener socketio client-side
 app.use('/api/productos', routerProductos);
