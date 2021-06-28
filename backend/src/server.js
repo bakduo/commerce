@@ -5,14 +5,15 @@
 const express = require('express');
 
 const routerProductos = require('./routes/productos');
-
-const handlebars = require('express-handlebars');
+const routerCarrito = require('./routes/carrito');
 
 const WSocket = require('./util/wsocket');
 
 const config = require('./config/index');
 
 const logger = require('./config/logger');
+
+const middlewareauth = require('./middleware/fakeauth');
 
 const { port } = config.server;
 
@@ -22,7 +23,6 @@ const requestId = require('express-request-id')();
 const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
-
 // indico donde estan los archivos estaticos
 app.use(express.static('public'));
 
@@ -32,27 +32,21 @@ app.use(logger.requests);
 
 app.use(express.urlencoded({ extended: true }));
 
-//using handlebars
-
-app.engine(
-  'hbs',
-  handlebars({
-    extname: '.hbs',
-    defaultLayaout: 'main.hbs',
-    layoutDir: __dirname + '/views/layouts',
-    partialDir: __dirname + '/views/partials',
-  })
-);
+//Auth every request
+app.use(middlewareauth.fakeAuth);
 
 //app.use('/',routerProductos);//Ahora usa public para poder tener socketio client-side
 app.use('/api/productos', routerProductos);
+app.use('/api/carrito', routerCarrito);
 
 app.use((req, res, next) => {
-  const mensaje = `ruta ${req.path} método ${req.method} no autorizada`;
+  const mensaje = {
+    error: -1,
+    description: `ruta ${req.path} método ${req.method} no autorizada`,
+  };
 
   next({
     message: mensaje,
-    error: -1,
     statusCode: 404,
     level: 'warn',
   });
@@ -70,9 +64,6 @@ app.use((err, req, res, next) => {
     message,
   });
 });
-
-app.set('view engine', 'hbs');
-app.set('views', './views');
 
 //wrapper TODO fix si crece
 const customsocket = new WSocket(io);

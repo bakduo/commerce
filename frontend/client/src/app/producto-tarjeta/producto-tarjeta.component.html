@@ -1,0 +1,35 @@
+<div class="card animated fadeIn fast" >
+
+  <img class="card-img-top img-fluid" [src]="producto.thumbail" [alt]="producto.name">
+  <div class="card-body">
+    <h4 class="card-title">{{ producto.title }}</h4>
+    <p class="card-text"> {{ producto.description }} </p>
+    <p class="card-text"><small class="text-muted">{{ producto.stock }}</small></p>
+
+    <button (click)="verProducto()"
+      type="button" class="btn btn-outline-primary btn-block">
+      Ver más...
+    </button>
+
+
+    <div *ngIf="getRole()">
+
+    <button (click)="eliminarProducto()"
+      type="button" class="btn btn-outline-primary btn-block">
+      Eliminar
+    </button>
+
+     <button (click)="editarProducto()"
+      type="button" class="btn btn-outline-primary btn-block">
+      Editar
+    </button>
+
+    </div>
+
+  </div>
+    <button (click)="agregarCarrito()"
+      type="button" class="btn btn-outline-primary btn-block">
+      agregar al carrito
+    </button>
+
+</div>

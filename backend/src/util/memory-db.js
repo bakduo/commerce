@@ -8,16 +8,40 @@ class MemoryDB {
   constructor(method) {
     try {
       this.complement = null;
+      this.persistence = false;
       if (method.type === 'file') {
-        this.complement = new ArchivoRepository(
-          path.resolve('./', process.env.DBPATH)
-        );
+        this.persistence = true;
       }
 
+      // if (method.type === 'file') {
+      //   this.complement = new ArchivoRepository(
+      //     path.resolve('./', process.env.DBPATH)
+      //   );
+      // }
+
       this.items = [];
+      this.cb = {};
     } catch (error) {
       throw Error(error);
     }
+  }
+
+  replaceAll(data) {
+    this.items = data;
+  }
+
+  getPersistence() {
+    return this.persistence;
+  }
+
+  setPersistence(pathLocal) {
+    if (this.persistence) {
+      this.complement = new ArchivoRepository(path.resolve('./', pathLocal));
+    }
+  }
+
+  setMathItem(match) {
+    this.cb = match;
   }
 
   async reloadFromFile() {
@@ -34,7 +58,7 @@ class MemoryDB {
   };
 
   getIndex = (id) => {
-    const index = this.items.findIndex((item) => item.id === id);
+    const index = this.items.findIndex((item) => this.cb(item, id));
 
     if (index >= 0) {
       return index;
@@ -92,6 +116,12 @@ class MemoryDB {
     return this.items.length;
   };
 
+  sync = async () => {
+    if (this.complement !== null) {
+      await this.complement.save(this.items);
+    }
+  };
+
   save = async (p) => {
     try {
       this.items.push(p);
@@ -103,6 +133,11 @@ class MemoryDB {
       throw error;
     }
   };
+
+  //expresion_equal=(item,valor)=>{return (item.a===valor)};
+  searchItem(value, expression_equal) {
+    return this.items.find((item) => expression_equal(item, value));
+  }
 }
 
 module.exports = MemoryDB;

@@ -10,9 +10,13 @@ const routerProduct = express.Router();
 
 const CustomOrigin = require('../middleware/custom-origin');
 
+const CheckProducto = require('../middleware/check⁻producto');
+
 const config = require('../config/index');
 
 const control = new CustomOrigin();
+
+const controlProducto = new CheckProducto();
 
 const repo = new ProductoRepository(config.db);
 
@@ -26,17 +30,22 @@ routerProduct.get('/listar', controller.getProductos);
 
 routerProduct.get('/listar/:id', control.checkIdGet, controller.getProducto);
 
-routerProduct.post('/guardar', control.checkForm, controller.postProducto);
+//Same as loopback middleware
+routerProduct.post(
+  '/guardar',
+  [control.authorize('admin'), controlProducto.checkFields],
+  controller.postProducto
+);
 
 routerProduct.put(
   '/actualizar/:id',
-  control.checkIdGet,
+  [control.authorize('admin'), control.checkIdGet],
   controller.putProducto
 );
 
 routerProduct.delete(
   '/borrar/:id',
-  control.checkIdGet,
+  [control.authorize('admin'), control.checkIdGet],
   controller.deleteProducto
 );
 /**********************************/

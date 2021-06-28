@@ -8,24 +8,21 @@ dotenv.config({
 
 const DBCustom = require('../datasource/dbcustom');
 
+const crypto = require('crypto');
+
+const hash = crypto.createHash('sha256').update('sample').digest('base64');
+
 const config = {
   server: {
     port: process.env.PORT || 3000,
     dbtype: process.env.DBTYPE || 'memory',
   },
   db: {},
+  id: hash,
+  session: {},
 };
 
 config.db = new DBCustom({
   dbtype: config.server.dbtype,
 });
-
-if (config.server.dbtype === 'file') {
-  const reload = async () => {
-    await config.db.reloadFromFile();
-  };
-
-  reload();
-}
-
 module.exports = config;

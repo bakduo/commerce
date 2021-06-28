@@ -1,16 +1,20 @@
 const MemoryDB = require('../util/memory-db');
 
 class DBCustom {
-  static instancia;
+  //static instancia;
 
   constructor(config) {
-    if (!!DBCustom.instancia) {
-      return DBCustom.instancia;
-    }
+    // if (!!DBCustom.instancia) {
+    //   return DBCustom.instancia;
+    // }
 
     this.store = null;
+    this.type = config.dbtype;
+    //DBCustom.instancia = this;
+  }
 
-    switch (config.dbtype) {
+  getStore() {
+    switch (this.type) {
       case 'memory':
         this.store = new MemoryDB({ type: 'memory' });
         break;
@@ -18,17 +22,16 @@ class DBCustom {
         this.store = new MemoryDB({ type: 'file' });
         break;
     }
-
-    DBCustom.instancia = this;
-  }
-
-  getStore() {
     return this.store;
   }
 
-  static getInstance() {
-    return DBCustom.instancia;
+  getInstanceDB(typeDB) {
+    return new MemoryDB({ type: typeDB });
   }
+
+  // static getInstance() {
+  //   return DBCustom.instancia;
+  // }
 }
 
 module.exports = DBCustom;

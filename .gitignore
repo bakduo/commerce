@@ -5,3 +5,50 @@ backend/package-lock.json
 backend/.env
 backend/development.env
 backend/testing.env
+frontend/client/node_modules
+
+# compiled output
+frontend/client/dist
+frontend/client/tmp
+frontend/client/out-tsc
+# Only exists if Bazel was run
+frontend/client/bazel-out
+
+# dependencies
+frontend/client/node_modules
+
+# profiling files
+frontend/client/chrome-profiler-events*.json
+frontend/client/speed-measure-plugin*.json
+
+# IDEs and editors
+frontend/client/.idea
+frontend/client/.project
+frontend/client/.classpath
+frontend/client/.c9/
+frontend/client/*.launch
+frontend/client/.settings/
+frontend/client/*.sublime-workspace
+
+# IDE - VSCode
+frontend/client/.vscode/*
+frontend/client/!.vscode/settings.json
+frontend/client/!.vscode/tasks.json
+frontend/client/!.vscode/launch.json
+frontend/client/!.vscode/extensions.json
+frontend/client/.history/*
+
+# misc
+frontend/client/.sass-cache
+frontend/client/connect.lock
+frontend/client/coverage
+frontend/client/libpeerconnection.log
+frontend/client/npm-debug.log
+frontend/client/yarn-error.log
+frontend/client/testem.log
+frontend/client/typings
+
+# System Files
+frontend/client/.DS_Store
+frontend/client/Thumbs.db
+

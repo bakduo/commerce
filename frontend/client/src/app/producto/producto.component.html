@@ -1,0 +1,27 @@
+<h1 class="animated fadeIn">{{ producto.name | uppercase }} <small>({{ producto.stock}})</small></h1>
+<hr>
+
+<div class="row animated fadeIn fast">
+
+  <div class="col-md-4">
+
+    <img [src]="producto.thumbail" class="img-fluid" [alt]="producto.name">
+    <br><br>
+    <a [routerLink]="['/productos']" class="btn btn-outline-danger btn-block">Regresar</a>
+
+  </div>
+
+  <div class="col-md-8">
+    <h3>{{ producto.title }}</h3>
+    <hr>
+    <p>
+      {{ producto.description }}
+    </p>
+    <div>
+
+    </div>
+
+
+  </div>
+
+</div>

@@ -3,11 +3,15 @@ const fscheck = require('fs');
 class ArchivoRepository {
   constructor(path) {
     this.path = path;
+    console.log('Desde constructor archivo:');
+    console.log(this.path);
+
     this.size = 0;
   }
 
   async save(data) {
     try {
+      console.log(this.path);
       await fsp.writeFile(this.path, JSON.stringify(data), 'utf8');
       return data;
     } catch (error) {

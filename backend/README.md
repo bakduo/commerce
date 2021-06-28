@@ -15,6 +15,7 @@
 - [x] eslint config
 - [x] vscode config
 - [x] pre-condition container
+- [x] fake-token-auth + fakeauthorize
 - [ ] container
 - [ ] cluster
 

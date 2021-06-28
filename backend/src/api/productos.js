@@ -9,7 +9,7 @@ class ProductoController {
   }
 
   getVista = (req, res, next) => {
-    const items = this.repo.getItems();
+    const items = this.repo.getSource().getItems();
 
     if (items == null) {
       return res.render('productos', {
@@ -26,7 +26,7 @@ class ProductoController {
 
   getProductos = (req, res, next) => {
     try {
-      const items = this.repo.getItems();
+      const items = this.repo.getSource().getItems();
 
       if (items == null) {
         return res.status(400).json({ status: 'No hay productos cargados' });
@@ -42,7 +42,7 @@ class ProductoController {
     try {
       if (!req.customblock) {
         if (req.params.id) {
-          const producto = this.repo.getId(Number(req.params.id));
+          const producto = this.repo.getSource().getId(Number(req.params.id));
           if (producto) {
             return res.status(200).json(producto);
           }
@@ -58,26 +58,37 @@ class ProductoController {
     try {
       if (!req.customblock) {
         if (req.body) {
-          const { title, price, thumbail } = req.body;
+          const {
+            title = '',
+            price = 0,
+            thumbail = '',
+            name = '',
+            stock = -1,
+            description = '',
+            code = -1,
+          } = req.body;
 
-          const id = this.repo.getSize();
+          const idP = this.repo.getSource().getSize();
 
-          const p = Producto.getProducto(title, id, thumbail, price);
+          const p = Producto.getProducto(
+            title,
+            idP,
+            thumbail,
+            price,
+            stock,
+            code,
+            description,
+            name
+          );
 
           const tmp1 = await this.repo.save(p);
-
           if (tmp1) {
             return res.status(200).json(tmp1);
           }
         }
       }
 
-      return res.status(200).json({
-        status: {
-          kind: req.customerror.kind,
-          descript: req.customerror.descript,
-        },
-      });
+      return res.status(200).json(req.customerror);
     } catch (error) {
       return res.status(500).json({ error: `${error}` });
     }
@@ -86,37 +97,53 @@ class ProductoController {
   putProducto = (req, res, next) => {
     try {
       if (!req.customblock) {
-        const { title, price, thumbail } = req.body;
+        const {
+          title = '',
+          price = -1,
+          thumbail = '',
+          name = '',
+          stock = -1,
+          description = '',
+          code = -1,
+        } = req.body;
+
+        const idP = Number(req.params.id);
 
         const p = Producto.getProducto(
           title,
-          this.repo.getSize(),
+          idP,
           thumbail,
-          price
+          price,
+          stock,
+          code,
+          description,
+          name
         );
 
-        const update = this.repo.updateById(Number(req.params.id), p);
+        const update = this.repo.updateById(idP, p);
 
         if (update) {
           return res.status(200).json(update);
         }
       }
-      return res.status(400).json({ status: 'Producto no encontrado' });
+      return res.status(400).json(req.customerror);
     } catch (error) {
       return res.status(500).json({ error: `${error}` });
     }
   };
 
-  deleteProducto = (req, res, next) => {
+  deleteProducto = async (req, res, next) => {
     try {
       if (!req.customblock) {
         if (req.params.id) {
-          const existe = this.repo.getId(Number(req.params.id));
+          const existe = this.repo.getSource().getId(Number(req.params.id));
 
           if (existe) {
             const deleteProduct = this.repo.deleteById(Number(req.params.id));
 
             if (deleteProduct !== null) {
+              await this.repo.getSource().sync();
+
               return res.status(200).json(deleteProduct);
             }
           }
