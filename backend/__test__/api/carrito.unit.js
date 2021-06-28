@@ -65,7 +65,6 @@ describe('API Carritos', () => {
         .get('/api/carrito/listar/' + sessionTmp + '?name=B')
         .end((err, res) => {
           res.should.have.status(200);
-          console.log(res.body);
           res.body.should.be.a('object');
           res.body.should.be.a('object').property('producto');
           res.body.producto.should.have.property('title').eql('Calculadora');
@@ -91,7 +90,6 @@ describe('API Carritos', () => {
         .delete('/api/carrito/borrar/1')
         .end((err, res) => {
           res.should.have.status(200);
-          console.log(res.body);
           res.body.should.be.a('object');
           res.body.should.have.property('producto').eql('1');
           done();
