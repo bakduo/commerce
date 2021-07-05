@@ -14,7 +14,9 @@ export class ProductosComponent implements OnInit {
   productos:Producto[] = [];
   role:boolean =false;
 
-  constructor(private _controlService:ControlauthService ,private _productoService:ProductoService,private router:Router) { }
+  constructor(private _controlService:ControlauthService ,private _productoService:ProductoService,private router:Router) {
+
+  }
 
   ngOnInit(): void {
 

@@ -7,6 +7,7 @@ backend/development.env
 backend/testing.env
 backend/production.env
 backend/db/*.json
+backend/export.sh
 frontend/client/node_modules
 
 # compiled output

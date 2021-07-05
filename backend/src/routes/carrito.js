@@ -20,7 +20,7 @@ const controller = new CarritoController(repo, repoProductos);
 
 const mcarrito = new CheckCarrito();
 
-/******Control router*************/
+/** ****Control router************ */
 
 routerCarrito.get('/listar', mcarrito.controlCarrito, controller.getProductos);
 
@@ -30,7 +30,7 @@ routerCarrito.get(
   controller.getProducto
 );
 
-//Same as loopback middleware
+// Same as loopback middleware
 routerCarrito.post(
   '/agregar/:id',
   mcarrito.controlCarrito,
@@ -42,6 +42,6 @@ routerCarrito.delete(
   mcarrito.controlCarrito,
   controller.deleteProducto
 );
-/**********************************/
+/** ******************************* */
 
 module.exports = routerCarrito;

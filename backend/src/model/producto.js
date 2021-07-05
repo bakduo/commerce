@@ -1,7 +1,6 @@
 class Producto {
   constructor() {
     this.title = '';
-    this.id = -1; //Math.random().toString();
     this.thumbail = '';
     this.price = 0.0;
     this.timestamp = Date.now();
@@ -13,7 +12,6 @@ class Producto {
 
   static getProductoByJson({
     title,
-    id,
     thumbail,
     price,
     stock,
@@ -22,7 +20,6 @@ class Producto {
     name,
   }) {
     const p = new Producto();
-    p.setId(id);
     p.setPrice(price);
     p.setThumbail(thumbail);
     p.setTitle(title);
@@ -34,18 +31,8 @@ class Producto {
     return p;
   }
 
-  static getProducto(
-    title,
-    id,
-    thumbail,
-    price,
-    stock,
-    code,
-    description,
-    name
-  ) {
+  static getProducto(title, thumbail, price, stock, code, description, name) {
     const p = new Producto();
-    p.setId(id);
     p.setPrice(price);
     p.setThumbail(thumbail);
     p.setTitle(title);
@@ -95,9 +82,7 @@ class Producto {
   setTitle = async (t) => {
     this.title = t;
   };
-  setId = async (i) => {
-    this.id = i;
-  };
+
   setThumbail = async (t) => {
     this.thumbail = t;
   };

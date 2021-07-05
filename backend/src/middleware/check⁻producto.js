@@ -21,8 +21,7 @@ class CheckProducto {
       status: false,
       kind: type,
     };
-
-    if (typeof type === 'number' || typeof type === 'string') {
+    if ((typeof type === 'number' || typeof type === 'string') && type >= 0) {
       valido.status = true;
       return valido;
     }
@@ -34,7 +33,6 @@ class CheckProducto {
 
     for (let i = 0; i < vector.length; i++) {
       const resultado = await callbackCheck(vector[i]);
-
       if (!resultado.status) {
         resultadoTest = {
           status: false,

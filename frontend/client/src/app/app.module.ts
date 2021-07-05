@@ -1,3 +1,5 @@
+import { configSocket } from './../environments/environment';
+
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
@@ -17,6 +19,9 @@ import { ProductoEditComponent } from './producto-edit/producto-edit.component';
 import { CarritoService} from './services/carrito.service';
 import { HttpClientModule } from '@angular/common/http';
 import { CarritoProductosComponent } from './carrito-productos/carrito-productos.component';
+import { MensajesUsuariosComponent } from './mensajes-usuarios/mensajes-usuarios.component';
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+import { environment } from 'src/environments/environment';
 
 @NgModule({
   declarations: [
@@ -29,13 +34,15 @@ import { CarritoProductosComponent } from './carrito-productos/carrito-productos
     ProductoComponent,
     ProductoCreateComponent,
     ProductoEditComponent,
-    CarritoProductosComponent  ],
+    CarritoProductosComponent,
+    MensajesUsuariosComponent  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    SocketIoModule.forRoot(configSocket)
   ],
   providers: [ProductoService,ControlauthService,CarritoService],
   bootstrap: [AppComponent]

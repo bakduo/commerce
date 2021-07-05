@@ -12,6 +12,8 @@ API project
 - [x] storage
 - [x] fake-auth
 - [x] fake-role
+- [x] Knex builder SQL
+- [x] migration schema
 - [ ] OpenAPI spec
 
 # Backend

@@ -8,11 +8,16 @@ class ProductoRepository extends Repository {
       return ProductoRepository.instancia;
     }
     super(datasource);
-    this.items.setMathItem(function (producto, id) {
-      return producto.id === id;
-    });
-    this.items.setPersistence(process.env.DBPATHPRODUCTOS);
-    this.items.reloadFromFile();
+    if (datasource.type.dbtype !== 'knex') {
+      this.items.setMathItem(function (producto, id) {
+        return producto.id === id;
+      });
+      this.items.setPersistence(process.env.DBPATHPRODUCTOS);
+      this.items.reloadFromFile();
+    } else {
+      this.items.setTable('productos');
+    }
+
     ProductoRepository.instancia = this;
   }
 }

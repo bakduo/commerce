@@ -35,8 +35,6 @@ export class ProductoEditComponent implements OnInit {
       this._productoService.getProducto(params['id']).subscribe(
         response => {
 
-          console.log(response);
-
           this.producto = response;
 
           if (this.producto!==null){

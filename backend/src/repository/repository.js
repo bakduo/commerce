@@ -21,6 +21,10 @@ class Repository {
     return -1;
   }
 
+  static handleError(error) {
+    throw error;
+  }
+
   deleteById(id) {
     try {
       const item = this.items.deleteById(id);
@@ -29,7 +33,8 @@ class Repository {
       }
       return null;
     } catch (error) {
-      throw error;
+      Repository.handleError(error);
+      return null;
     }
   }
 
@@ -41,7 +46,8 @@ class Repository {
       }
       return null;
     } catch (error) {
-      throw error;
+      Repository.handleError(error);
+      return null;
     }
   }
 
@@ -50,7 +56,8 @@ class Repository {
       await this.items.save(p);
       return p;
     } catch (error) {
-      throw error;
+      Repository.handleError(error);
+      return null;
     }
   }
 }

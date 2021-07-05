@@ -18,19 +18,19 @@ const control = new CustomOrigin();
 
 const controlProducto = new CheckProducto();
 
-const repo = new ProductoRepository(config.db);
+const repo = new ProductoRepository(config.dbproducts);
 
 const controller = new ProductoController(new ProductoService(repo), repo);
-/********************/
+/** ***************** */
 
-/******Control router*************/
+/** ****Control router************ */
 routerProduct.get('/vista', controller.getVista);
 
 routerProduct.get('/listar', controller.getProductos);
 
 routerProduct.get('/listar/:id', control.checkIdGet, controller.getProducto);
 
-//Same as loopback middleware
+// Same as loopback middleware
 routerProduct.post(
   '/guardar',
   [control.authorize('admin'), controlProducto.checkFields],
@@ -48,6 +48,6 @@ routerProduct.delete(
   [control.authorize('admin'), control.checkIdGet],
   controller.deleteProducto
 );
-/**********************************/
+/** ******************************* */
 
 module.exports = routerProduct;

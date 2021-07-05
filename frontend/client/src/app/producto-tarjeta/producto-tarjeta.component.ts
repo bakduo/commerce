@@ -38,7 +38,7 @@ export class ProductoTarjetaComponent implements OnInit {
   eliminarProducto(){
       this._productoService.deleteProducto(Number(this.index)).subscribe(
         response => {
-          this.router.navigate(["/productos"]);
+          this.router.navigate(["/"]);
         },
         error => {
           console.log(error);

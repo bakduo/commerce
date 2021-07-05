@@ -1,12 +1,12 @@
 class FakeSession {
   static instancia;
 
-  constructor(datastore) {
+  constructor() {
     if (!!FakeSession.instancia) {
       return FakeSession.instancia;
     }
 
-    this.items = datastore.getInstanceDB('memory');
+    this.items = DBCustom.getInstanceDB('memory');
 
     FakeSession.instancia = this;
   }

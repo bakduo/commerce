@@ -1,13 +1,18 @@
+// const ProductoService = require('../services/producto-sevice.js');
 
-const ProductoService = require('../services/producto-sevice.js');
+// const ArchivoRepository = require('../repository/archivo-repository');
 
-const ArchivoRepository = require("../repository/archivo-repository");
+// const service = new ProductoService();
 
-const service = new ProductoService();
+// const PATH_DB = process.env.DBPATHSOCKET || '/db/storage.db';
 
-const PATH_DB=process.env.PATH_DB || "/db/storage.db";
+// const archivo = new ArchivoRepository(PATH_DB);
 
-const archivo = new ArchivoRepository(PATH_DB);
+const config = require('../config/index');
+
+const MessageRepository = require('../repository/message-repository');
+
+const repo = new MessageRepository(config.dbmsg);
 
 const vector = [];
 
@@ -16,101 +21,91 @@ const TOTAL = 100;
 let contador = 0;
 
 class WSocket {
-    
-    cs = null;
+  constructor(socket) {
+    this.cs = socket;
 
-    clients = null;
+    this.clients = [];
+  }
 
-    constructor(socket){
+  addClient(client) {
+    this.clients.push(client);
+  }
 
-        this.cs = socket;
-        
-        this.clients = [];
+  closeAll() {
+    this.clients.forEach((element) => {
+      element.close();
+    });
+  }
 
+  getClient(id) {
+    const clientIndex = this.clients.findIndex((con) => con.id === id);
+    if (clientIndex >= 0) {
+      return this.clients[clientIndex];
     }
+    return null;
+  }
 
-    addClient(client){
+  addOperation(canal) {
+    /*canal.on('procesar', (data) => {
+      const producto = {
+        title: data.title,
+        price: data.price,
+        thumbail: data.thumbail,
+      };
 
-        this.clients.push(client);
-    }
+      service.addProducto(producto);
+      const items = service.getProductos();
+      //client
+      canal.emit('renderproductos', items);
+      //all broadcast
+      canal.broadcast.emit('renderproductos', items);
+    });
 
-    closeAll(){
-        
-        this.clients.forEach(element => {
-            element.close();
-        });
+    canal.on('getproductos', (data) => {
+      //client
+      const items = service.getProductos();
+      canal.emit('renderproductos', items);
+    });
 
-    }
+    */
+    /*
+    canal.on('getmsg', async (data) => {
+      //client
+      const items = await archivo.readFile();
+      canal.emit('rendermsg', items);
+    });
+    */
 
-    getClient(id){
-        
-        const clientIndex = this.clients.findIndex((con)=>con.id === id);
-        if (clientIndex>=0){
-            return this.clients[clientIndex];
-        }
-        return null;
-    }
+    canal.on('getmessages', async () => {
+      const items = await repo.getSource().getItems();
+      canal.emit('reloadmsgs', items);
+    });
 
-    addOperation(canal){
+    canal.on('appendmsg', async (data) => {
+      if (contador < TOTAL) {
+        const feeback = {
+          msg: data.msg,
+          tiempo: data.tiempo,
+          user: data.user,
+        };
 
-        canal.on("procesar",data=>{
-            const producto = {
-                title: data.title,
-                price: data.price,
-                thumbail: data.thumbail
-            }
+        vector.push(feeback);
+        //await archivo.save(vector);
+        await repo.save(feeback);
+        canal.broadcast.emit('reloadmsg', feeback);
+        contador++;
+      } else {
+        canal.emit('overflow', {});
+      }
+    });
+  }
 
-            service.addProducto(producto);
-            const items = service.getProductos();
-            //client
-            canal.emit("renderproductos",items);
-            //all broadcast
-            canal.broadcast.emit("renderproductos",items);
-        });
-
-        canal.on("getproductos",data=>{
-            //client
-            const items = service.getProductos();
-            canal.emit("renderproductos",items);
-        });
-
-        canal.on("getmsg",async data=>{
-            //client
-            const items = await archivo.readFile();
-            canal.emit("rendermsg",items);
-        });
-
-        canal.on("appendmsg",async data =>{
-
-            if (contador < TOTAL){
-                
-                const feeback = {
-                    msg:data.msg,
-                    tiempo:data.tiempo,
-                    user:data.user
-                }
-
-                vector.push(feeback);
-                await archivo.save(vector);
-                canal.broadcast.emit("reloadmsg",feeback);
-                contador++
-            }else{
-                canal.emit("overflow",{});
-            }
-        })
-
-    }
-
-
-    init(){
-
-        this.cs.on('connection',async (canal) => {
-            this.addOperation(canal); 
-            canal.emit("getClient",{});
-            
-        });
-    }
-
+  init() {
+    this.cs.on('connection', async (canal) => {
+      this.addOperation(canal);
+      canal.emit('getClient', {});
+    });
+  }
 }
 
 module.exports = WSocket;

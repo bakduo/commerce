@@ -19,7 +19,6 @@ export class ProductoComponent implements OnInit {
         this.producto = this._productoService.getProducto(params['id']).subscribe(
           product => {
             this.producto = product;
-            console.log(product);
           },
           error => {
             console.log(error);

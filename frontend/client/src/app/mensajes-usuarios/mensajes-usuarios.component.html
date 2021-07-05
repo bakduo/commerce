@@ -1,0 +1,42 @@
+
+<div class="jumbotron jumbotron-fluid">
+
+              <div class="container">
+                  <h1 class="display-4">Mensajes</h1>
+
+                  <form autocomplete="off" [formGroup]="formMessage" (ngSubmit)="newMessage()">
+
+                    <div class="form-group">
+
+                      <label for="exampleFormControlInput1">Email address</label>
+                      <input class="form-control"
+               type="email"
+               placeholder="Email"
+               formControlName="email"
+                      class="form-control" placeholder="name@example.com">
+
+                    </div>
+
+                    <hr>
+
+                    <br>
+
+                    <div class="form-group" *ngFor="let message of messagesLocal">
+
+                    <b> {{message.user}} </b> {{message.msg}}  <i> [ {{message.tiempo}} ] </i>
+
+                    </div>
+
+                    <br>
+
+                    <div class="form-group">
+
+                      <label for="exampleFormControlTextarea2">Texto</label>
+
+                       <textarea id="msgtext" class="form-control" formControlName="msgtext" rows="2"></textarea>
+
+                    </div>
+                     <button type="submit" id="boton2" class="btn btn-primary">Send msg</button>
+                </form>
+              </div>
+</div>

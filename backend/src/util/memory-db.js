@@ -2,11 +2,15 @@ const ArchivoRepository = require('../repository/archivo-repository');
 
 const path = require('path');
 
-class MemoryDB {
+const CommonDAO = require('./commondao');
+
+class MemoryDB extends CommonDAO {
   //caso ejemplo una DB memory
 
   constructor(method) {
     try {
+      super();
+
       this.complement = null;
       this.persistence = false;
       if (method.type === 'file') {

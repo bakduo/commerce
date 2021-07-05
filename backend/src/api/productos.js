@@ -24,9 +24,9 @@ class ProductoController {
     });
   };
 
-  getProductos = (req, res, next) => {
+  getProductos = async (req, res, next) => {
     try {
-      const items = this.repo.getSource().getItems();
+      const items = await this.repo.getSource().getItems();
 
       if (items == null) {
         return res.status(400).json({ status: 'No hay productos cargados' });
@@ -38,11 +38,13 @@ class ProductoController {
     }
   };
 
-  getProducto = (req, res, next) => {
+  getProducto = async (req, res, next) => {
     try {
       if (!req.customblock) {
         if (req.params.id) {
-          const producto = this.repo.getSource().getId(Number(req.params.id));
+          const producto = await this.repo
+            .getSource()
+            .getId(Number(req.params.id));
           if (producto) {
             return res.status(200).json(producto);
           }
@@ -56,71 +58,27 @@ class ProductoController {
 
   postProducto = async (req, res, next) => {
     try {
-      if (!req.customblock) {
-        if (req.body) {
-          const {
-            title = '',
-            price = 0,
-            thumbail = '',
-            name = '',
-            stock = -1,
-            description = '',
-            code = -1,
-          } = req.body;
-
-          const idP = this.repo.getSource().getSize();
-
-          const p = Producto.getProducto(
-            title,
-            idP,
-            thumbail,
-            price,
-            stock,
-            code,
-            description,
-            name
-          );
-
-          const tmp1 = await this.repo.save(p);
-          if (tmp1) {
-            return res.status(200).json(tmp1);
-          }
-        }
+      if (req.customblock) {
+        return res.status(200).json(req.customerror);
       }
 
-      return res.status(200).json(req.customerror);
+      if (req.body) {
+        const tmp1 = await this.repo.save(req.body);
+        if (tmp1) {
+          return res.status(200).json(tmp1);
+        }
+      }
     } catch (error) {
       return res.status(500).json({ error: `${error}` });
     }
   };
 
-  putProducto = (req, res, next) => {
+  putProducto = async (req, res, next) => {
     try {
       if (!req.customblock) {
-        const {
-          title = '',
-          price = -1,
-          thumbail = '',
-          name = '',
-          stock = -1,
-          description = '',
-          code = -1,
-        } = req.body;
-
         const idP = Number(req.params.id);
 
-        const p = Producto.getProducto(
-          title,
-          idP,
-          thumbail,
-          price,
-          stock,
-          code,
-          description,
-          name
-        );
-
-        const update = this.repo.updateById(idP, p);
+        const update = await this.repo.updateById(idP, req.body);
 
         if (update) {
           return res.status(200).json(update);
@@ -136,14 +94,16 @@ class ProductoController {
     try {
       if (!req.customblock) {
         if (req.params.id) {
-          const existe = this.repo.getSource().getId(Number(req.params.id));
+          const existe = await this.repo
+            .getSource()
+            .getId(Number(req.params.id));
 
           if (existe) {
-            const deleteProduct = this.repo.deleteById(Number(req.params.id));
+            const deleteProduct = await this.repo.deleteById(
+              Number(req.params.id)
+            );
 
             if (deleteProduct !== null) {
-              await this.repo.getSource().sync();
-
               return res.status(200).json(deleteProduct);
             }
           }

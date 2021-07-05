@@ -36,8 +36,14 @@ export class ProductoCreateComponent implements OnInit {
     if ( this.formProducto.valid ) {
       this._productoService.addProducto(this.formProducto.value)
       .subscribe(
-        response => {
-          this.router.navigate(["/productos"]);
+        (response) => {
+          const respuesta:any = response;
+          if (respuesta.status===false){
+            //FIX sweetAlert
+            alert("Los datos del formulario no están correctos: " + respuesta.type);
+          }else{
+            this.router.navigate(["/productos"]);
+          }
         },
         error => {
           console.log(error);

@@ -1,37 +1,35 @@
 const MemoryDB = require('../util/memory-db');
+const WKnex = require('../util/wknex');
 
 class DBCustom {
-  //static instancia;
-
   constructor(config) {
-    // if (!!DBCustom.instancia) {
-    //   return DBCustom.instancia;
-    // }
-
     this.store = null;
-    this.type = config.dbtype;
-    //DBCustom.instancia = this;
+    this.type = config;
   }
 
   getStore() {
-    switch (this.type) {
+    switch (this.type.dbtype) {
       case 'memory':
         this.store = new MemoryDB({ type: 'memory' });
         break;
       case 'file':
         this.store = new MemoryDB({ type: 'file' });
         break;
+      case 'knex':
+        this.store = new WKnex({
+          type: this.type.persistence,
+        });
+        break;
+
+      default:
+        break;
     }
     return this.store;
   }
 
-  getInstanceDB(typeDB) {
+  static getInstanceDB(typeDB) {
     return new MemoryDB({ type: typeDB });
   }
-
-  // static getInstance() {
-  //   return DBCustom.instancia;
-  // }
 }
 
 module.exports = DBCustom;

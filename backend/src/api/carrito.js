@@ -51,7 +51,7 @@ class CarritoController {
     try {
       if (req.params.id) {
         //get producto DB fake
-        const producto = this.productos
+        const producto = await this.productos
           .getSource()
           .getId(Number(req.params.id));
         if (producto) {
