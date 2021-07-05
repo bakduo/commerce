@@ -8,6 +8,7 @@ backend/testing.env
 backend/production.env
 backend/db/*.json
 backend/export.sh
+backend/db/db.sqlite
 frontend/client/node_modules
 
 # compiled output
