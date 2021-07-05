@@ -8,6 +8,9 @@ dotenv.config({
   path: path.resolve('./', process.env.NODE_ENV + '.env'),
 });
 
+
+//For production please use Secrets or file by secrets not enviroments variable
+//
 module.exports = {
   // development: {
   //   client: 'sqlite3',
