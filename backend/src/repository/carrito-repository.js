@@ -4,23 +4,23 @@ class CarritoRepository extends Repository {
   static instancia;
 
   constructor(datasource) {
-    super(datasource);
     if (!!CarritoRepository.instancia) {
-      return DBCustom.instancia;
+      return CarritoRepository.instancia;
     }
 
-    this.items.setMathItem(function (carrito, id) {
-      return carrito.id === id;
-    });
+    super(datasource);
 
-    this.items.setPersistence(process.env.DBPATHCARRITO);
-    this.items.reloadFromFile();
+    this.init();
+
+    if (this.getSource().getType() === 'nosql') {
+      const CarritoSchema = require('../model/carrito-schema');
+      this.items.loadConfiguration('Carritos', 'Carrito', CarritoSchema);
+    } else {
+      this.items.loadConfiguration('carritos');
+    }
+
     CarritoRepository.instancia = this;
   }
-
-  getProductos = async () => {
-    await this.items.reloadFromFile();
-  };
 }
 
 module.exports = CarritoRepository;

@@ -1,6 +1,11 @@
 class Repository {
   constructor(datasource) {
-    this.items = datasource.getStore();
+    this.data = datasource;
+    this.items = {};
+  }
+
+  init() {
+    this.items = this.data.getStore();
   }
 
   async clear() {
@@ -11,23 +16,64 @@ class Repository {
     return this.items;
   }
 
-  getIndex(id) {
-    const index = this.items.getIndex(id);
+  include = async (value, expression_equal) => {
+    const items = await this.items.getItems();
+    const resultado = items.find((item) => expression_equal(item, value));
+    if (resultado) {
+      return { status: true, item: resultado };
+    }
+    return { status: false, item: null };
+  };
+
+  getId = async (id) => {
+    const item = await this.items.getId(id);
+    if (item) {
+      return item;
+    }
+
+    return null;
+  };
+
+  getItems = async () => {
+    const items = await this.items.getItems();
+
+    if (items) {
+      return items;
+    }
+
+    return null;
+  };
+
+  getIndex = async (id) => {
+    const index = await this.items.getIndex(id);
 
     if (index >= 0) {
       return index;
     }
 
     return -1;
-  }
+  };
 
   static handleError(error) {
     throw error;
   }
 
-  deleteById(id) {
+  delete = async (item) => {
     try {
-      const item = this.items.deleteById(id);
+      const itemeliminado = await this.items.delete(item);
+      if (itemeliminado !== null) {
+        return itemeliminado;
+      }
+      return null;
+    } catch (error) {
+      Repository.handleError(error);
+      return null;
+    }
+  };
+
+  deleteById = async (id) => {
+    try {
+      const item = await this.items.deleteById(id);
       if (item !== null) {
         return item;
       }
@@ -36,11 +82,11 @@ class Repository {
       Repository.handleError(error);
       return null;
     }
-  }
+  };
 
-  updateById(id, producto) {
+  updateById = async (id, producto) => {
     try {
-      const p = this.items.updateById(id, producto);
+      const p = await this.items.updateById(id, producto);
       if (p) {
         return p;
       }
@@ -49,17 +95,20 @@ class Repository {
       Repository.handleError(error);
       return null;
     }
-  }
+  };
 
-  async save(p) {
+  save = async (p) => {
     try {
-      await this.items.save(p);
-      return p;
+      const result = await this.items.save(p);
+      if (result) {
+        return p;
+      }
+      return null;
     } catch (error) {
       Repository.handleError(error);
       return null;
     }
-  }
+  };
 }
 
 module.exports = Repository;

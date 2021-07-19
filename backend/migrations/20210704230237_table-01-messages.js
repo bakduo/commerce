@@ -1,5 +1,5 @@
 exports.up = function (knex) {
-  return knex.schema.createTableIfNotExists('messages', function (table) {
+  return knex.schema.createTableIfNotExists('mensajes', function (table) {
     table.increments();
     table.string('user');
     table.text('msg');
@@ -9,7 +9,7 @@ exports.up = function (knex) {
 };
 
 exports.down = function (knex) {
-  return knex.schema.alterTable('messages', (table) => {
+  return knex.schema.alterTable('mensajes', (table) => {
     table.dropForeign('status');
   });
 };

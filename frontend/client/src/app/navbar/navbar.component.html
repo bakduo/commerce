@@ -21,16 +21,43 @@
       <li class="nav-item" routerLinkActive="active">
         <a class="nav-link" [routerLink]="['carrito']">Carrito {{(productosCarrito$ | async)?.length }}</a>
       </li>
+
     </ul>
 
-
-
-    <form class="form-inline my-2 my-lg-0">
-      <button (click)="changerole()"
-          class="btn btn-outline-primary my-2 my-sm-0" type="button">changerole</button>
-
+    <form class="form-inline">
+        <button (click)="changerole()" class="btn btn-outline-success my-2 my-sm-0" type="button">changerole</button>
     </form>
 
-
   </div>
+
+</nav>
+
+
+
+
+<!-- As a heading -->
+<nav class="navbar navbar-light bg-light">
+  <span class="navbar-brand mb-0 h1">Filter</span>
+
+   <form autocomplete="off" class="form-inline" [formGroup]="form" (ngSubmit)="filterSearch()">
+
+
+            <select formControlName="filter" class="dropdown-toggle">
+                <option class="dropdown-item" disabled>Select filter</option>
+                <option>Choose filter</option>
+                <option class="dropdown-item" *ngFor="let name of filterList">{{name}}</option>
+            </select>
+
+            <input type="search" placeholder="valuefilter" formControlName="valuefilter" class="dropdown-toggle"/>
+
+            <div class="dropdown-item" *ngIf="f.filter.touched && f.filter.invalid" class="alert alert-danger">
+                <div class="dropdown-item" *ngIf="f.filter.errors?.required">filter is required.</div>
+            </div>
+
+            <button class="btn btn-sm btn-outline-secondary" type="submit" [disabled]="!form.valid">Filter</button>
+            <button class="btn btn-sm btn-outline-secondary" type="button" (click)="clearFilter()" >clear Filter</button>
+
+
+
+  </form>
 </nav>

@@ -37,7 +37,7 @@ export class ProductosComponent implements OnInit {
     return this.role;
   }
 
-  verProducto( idx:number ){
+  verProducto( idx:any ){
     this.router.navigate( ['/producto',idx] );
   }
 

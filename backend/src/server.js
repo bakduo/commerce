@@ -3,9 +3,7 @@
  */
 
 const express = require('express');
-
 const cors = require('cors');
-
 const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http, {
@@ -36,7 +34,6 @@ app.use(middlewareauth.fakeAuth);
 
 app.use(cors(config.server.cors.server));
 
-// app.use('/',routerProductos);//Ahora usa public para poder tener socketio client-side
 app.use('/api/productos', routerProductos);
 app.use('/api/carrito', routerCarrito);
 
@@ -58,9 +55,7 @@ app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
 
   const log = `${logger.header(req)} ${statusCode} ${message}`;
-
   logger.error(log);
-
   res.status(statusCode);
   res.json({
     message,

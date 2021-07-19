@@ -36,14 +36,15 @@ export class MensajesUsuariosComponent implements OnInit, OnDestroy {
       msgtext  : ['', [ Validators.required, Validators.minLength(5) ]  ]
     });
 
+    this.messages$ = this._messageService.getMessages$();
+    this._messages = this.messages$.subscribe((items)=>this.messagesLocal=items);
 
   }
 
   ngOnInit() {
 
 
-    this.messages$ = this._messageService.getMessages$();
-    this._messages = this.messages$.subscribe((items)=>this.messagesLocal=items);
+
     //esto es solo para esperar los mensajes remotos, cuando llegan se notifica al servicio y se almancenan en la estructura
     this._messageSub = this._messageService.currentMessage.subscribe(msg => this._messageService.addMsg(msg));
     this._messagesSub  = this._messageService.listmessages.subscribe(items=>{this._messageService.updateMessages(items);this.messagesLocal=items;});

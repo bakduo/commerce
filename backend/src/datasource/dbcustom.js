@@ -1,5 +1,6 @@
 const MemoryDB = require('../util/memory-db');
 const WKnex = require('../util/wknex');
+const WMongo = require('../util/wmongo');
 
 class DBCustom {
   constructor(config) {
@@ -15,9 +16,19 @@ class DBCustom {
       case 'file':
         this.store = new MemoryDB({ type: 'file' });
         break;
-      case 'knex':
+      case 'mysql':
         this.store = new WKnex({
-          type: this.type.persistence,
+          type: 'mysql',
+        });
+        break;
+      case 'sqlite':
+        this.store = new WKnex({
+          type: 'sqlite',
+        });
+        break;
+      case 'mongo':
+        this.store = new WMongo({
+          type: 'nosql',
         });
         break;
 

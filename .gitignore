@@ -7,8 +7,14 @@ backend/development.env
 backend/testing.env
 backend/production.env
 backend/db/*.json
-backend/export.sh
 backend/db/db.sqlite
+backend/db/db.sqlite.zip
+backend/export-prod.sh
+backend/export.sh
+backend/mysql.env
+backend/nosql.env
+backend/sqlite.env
+
 frontend/client/node_modules
 
 # compiled output

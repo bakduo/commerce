@@ -3,39 +3,47 @@ class CommonDAO {
 
   constructor() {}
 
-  replaceAll(data) {
+  getType() {
     console.log('implement concrete class');
   }
 
-  setMathItem(match) {
+  replaceAll = async (data) => {
     console.log('implement concrete class');
-  }
+  };
+
+  setMathItem = async (match) => {
+    console.log('implement concrete class');
+  };
 
   clear = async () => {
     console.log('implement concrete class');
   };
 
-  getIndex = (id) => {
+  getIndex = async (id) => {
     console.log('implement concrete class');
   };
 
-  getItems = () => {
+  getItems = async () => {
     console.log('implement concrete class');
   };
 
-  getId = (id) => {
+  getId = async (id) => {
     console.log('implement concrete class');
   };
 
-  deleteById = (id) => {
+  delete = async (item) => {
     console.log('implement concrete class');
   };
 
-  updateById = (id, producto) => {
+  deleteById = async (id) => {
     console.log('implement concrete class');
   };
 
-  getSize = () => {
+  updateById = async (id, producto) => {
+    console.log('implement concrete class');
+  };
+
+  getSize = async () => {
     console.log('implement concrete class');
   };
 
@@ -43,9 +51,9 @@ class CommonDAO {
     console.log('implement concrete class');
   };
 
-  searchItem(value, expression_equal) {
+  searchItem = async (value, expression_equal) => {
     console.log('implement concrete class');
-  }
+  };
 }
 
 module.exports = CommonDAO;

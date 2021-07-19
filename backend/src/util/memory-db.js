@@ -5,8 +5,6 @@ const path = require('path');
 const CommonDAO = require('./commondao');
 
 class MemoryDB extends CommonDAO {
-  //caso ejemplo una DB memory
-
   constructor(method) {
     try {
       super();
@@ -17,17 +15,15 @@ class MemoryDB extends CommonDAO {
         this.persistence = true;
       }
 
-      // if (method.type === 'file') {
-      //   this.complement = new ArchivoRepository(
-      //     path.resolve('./', process.env.DBPATH)
-      //   );
-      // }
-
       this.items = [];
       this.cb = {};
     } catch (error) {
       throw Error(error);
     }
+  }
+
+  getType() {
+    return 'memory';
   }
 
   replaceAll(data) {
@@ -61,7 +57,7 @@ class MemoryDB extends CommonDAO {
     }
   };
 
-  getIndex = (id) => {
+  getIndex = async (id) => {
     const index = this.items.findIndex((item) => this.cb(item, id));
 
     if (index >= 0) {
@@ -71,13 +67,13 @@ class MemoryDB extends CommonDAO {
     return -1;
   };
 
-  getItems = () => {
+  getItems = async () => {
     return this.items;
   };
 
-  getId = (id) => {
+  getId = async (id) => {
     try {
-      const index = this.getIndex(id);
+      const index = await this.getIndex(id);
       if (index >= 0) {
         return this.items[index];
       }
@@ -87,9 +83,9 @@ class MemoryDB extends CommonDAO {
     }
   };
 
-  deleteById = (id) => {
+  deleteById = async (id) => {
     try {
-      const itemDelete = this.getId(id);
+      const itemDelete = await this.getId(id);
 
       if (itemDelete !== null) {
         this.items = this.items.filter((item) => item !== itemDelete);

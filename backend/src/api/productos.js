@@ -1,15 +1,12 @@
 // Controller routes
 
-const Producto = require('../model/producto');
-
 class ProductoController {
-  constructor(serv, repository) {
-    this.srv = serv;
+  constructor(repository) {
     this.repo = repository;
   }
 
-  getVista = (req, res, next) => {
-    const items = this.repo.getSource().getItems();
+  getVista = async (req, res, next) => {
+    const items = await this.repo.getItems();
 
     if (items == null) {
       return res.render('productos', {
@@ -26,7 +23,13 @@ class ProductoController {
 
   getProductos = async (req, res, next) => {
     try {
-      const items = await this.repo.getSource().getItems();
+      let items = null;
+
+      if (Object.keys(req.query).length > 0) {
+        items = await this.repo.find(req.query);
+      } else {
+        items = await this.repo.getItems();
+      }
 
       if (items == null) {
         return res.status(400).json({ status: 'No hay productos cargados' });
@@ -42,9 +45,7 @@ class ProductoController {
     try {
       if (!req.customblock) {
         if (req.params.id) {
-          const producto = await this.repo
-            .getSource()
-            .getId(Number(req.params.id));
+          const producto = await this.repo.getId(req.params.id);
           if (producto) {
             return res.status(200).json(producto);
           }
@@ -63,9 +64,20 @@ class ProductoController {
       }
 
       if (req.body) {
-        const tmp1 = await this.repo.save(req.body);
-        if (tmp1) {
-          return res.status(200).json(tmp1);
+        const existe = await this.repo.include(
+          req.body.code,
+          (item, codigo) => {
+            return item.code === Number(codigo);
+          }
+        );
+
+        if (!existe.status) {
+          const tmp1 = await this.repo.save(req.body);
+          if (tmp1) {
+            return res.status(200).json(tmp1);
+          }
+        } else {
+          return res.status(208).json({ status: 'Producto already exists.' });
         }
       }
     } catch (error) {
@@ -76,12 +88,22 @@ class ProductoController {
   putProducto = async (req, res, next) => {
     try {
       if (!req.customblock) {
-        const idP = Number(req.params.id);
+        const existe = await this.repo.getId(req.params.id);
 
-        const update = await this.repo.updateById(idP, req.body);
+        if (existe) {
+          // console.log(existe);
+          // existe.name = req.body.name;
+          // existe.stock = req.body.stock;
+          // existe.price = req.body.stock;
+          // existe.code = req.body.code;
+          // existe.description = req.body.description;
+          // existe.thumbail = req.body.thumbail;
+          // existe.title = req.body.title;
+          const update = await this.repo.updateById(req.params.id, req.body);
 
-        if (update) {
-          return res.status(200).json(update);
+          if (update) {
+            return res.status(200).json(update);
+          }
         }
       }
       return res.status(400).json(req.customerror);
@@ -94,14 +116,10 @@ class ProductoController {
     try {
       if (!req.customblock) {
         if (req.params.id) {
-          const existe = await this.repo
-            .getSource()
-            .getId(Number(req.params.id));
+          const existe = await this.repo.getId(req.params.id);
 
           if (existe) {
-            const deleteProduct = await this.repo.deleteById(
-              Number(req.params.id)
-            );
+            const deleteProduct = await this.repo.deleteById(req.params.id);
 
             if (deleteProduct !== null) {
               return res.status(200).json(deleteProduct);

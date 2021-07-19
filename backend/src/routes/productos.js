@@ -2,8 +2,6 @@ const express = require('express');
 
 const ProductoController = require('../api/productos');
 
-const ProductoService = require('../services/producto-sevice');
-
 const ProductoRepository = require('../repository/producto-repository');
 
 const routerProduct = express.Router();
@@ -18,9 +16,9 @@ const control = new CustomOrigin();
 
 const controlProducto = new CheckProducto();
 
-const repo = new ProductoRepository(config.dbproducts);
+const repo = new ProductoRepository(config.db);
 
-const controller = new ProductoController(new ProductoService(repo), repo);
+const controller = new ProductoController(repo);
 /** ***************** */
 
 /** ****Control router************ */
@@ -30,22 +28,21 @@ routerProduct.get('/listar', controller.getProductos);
 
 routerProduct.get('/listar/:id', control.checkIdGet, controller.getProducto);
 
-// Same as loopback middleware
 routerProduct.post(
   '/guardar',
-  [control.authorize('admin'), controlProducto.checkFields],
+  control.authorize('admin'),
   controller.postProducto
 );
 
 routerProduct.put(
   '/actualizar/:id',
-  [control.authorize('admin'), control.checkIdGet],
+  control.authorize('admin'),
   controller.putProducto
 );
 
 routerProduct.delete(
   '/borrar/:id',
-  [control.authorize('admin'), control.checkIdGet],
+  control.authorize('admin'),
   controller.deleteProducto
 );
 /** ******************************* */

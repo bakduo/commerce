@@ -7,6 +7,9 @@
     "start": "rm -f db/*.json;cross-env NODE_ENV=production node src/server.js",
     "test": "rm -f db/*.json;cross-env NODE_ENV='testing' node_modules/.bin/mocha __test__/api/*",
     "dev": "rm -f db/*.json;cross-env NODE_ENV='development' node_modules/.bin/nodemon --inspect src/server.js",
+    "sqlite": "cross-env NODE_ENV='sqlite' node_modules/.bin/nodemon --inspect src/server.js",
+    "mysql": "cross-env NODE_ENV='mysql' node_modules/.bin/nodemon --inspect src/server.js",
+    "nosql": "cross-env NODE_ENV='nosql' node_modules/.bin/nodemon --inspect src/server.js",
     "knexdev": "./node_modules/.bin/knex"
   },
   "author": "Rodolfo",
@@ -22,6 +25,7 @@
     "mongoose": "^5.12.14",
     "morgan": "^1.10.0",
     "mysql": "^2.18.1",
+    "pg": "^8.6.0",
     "reflect-metadata": "^0.1.13",
     "socket.io": "^4.1.2",
     "sqlite3": "^5.0.2",

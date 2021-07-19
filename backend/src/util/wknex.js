@@ -8,6 +8,10 @@ class WKnex extends CommonDAO {
       this.table = '';
       this.query = '';
       this.options = {};
+      this.idQuery = '';
+      this.trx = null;
+      this.trxProvider = null;
+      this.transactionProvider = null;
 
       switch (method.type) {
         case 'sqlite':
@@ -22,11 +26,11 @@ class WKnex extends CommonDAO {
           this.options = {
             client: 'mysql',
             connection: {
-              host: process.env.DBMYSQL_HOST,
-              user: process.env.DBMYSQL_USER,
-              password: process.env.DBMYSQL_PASSWD,
-              database: process.env.DBMYSQL_DBNAME,
-              port: process.env.DBMYSQL_PORT,
+              host: process.env.DBTYPE_PRINCIPAL_HOST,
+              user: process.env.DBTYPE_PRINCIPAL_USER,
+              password: process.env.DBTYPE_PRINCIPAL_PASSWD,
+              database: process.env.DBTYPE_PRINCIPAL_DBNAME,
+              port: process.env.DBTYPE_PRINCIPAL_PORT,
             },
           };
           break;
@@ -38,6 +42,10 @@ class WKnex extends CommonDAO {
     } catch (error) {
       throw Error(error);
     }
+  }
+
+  getType() {
+    return 'sql';
   }
 
   setQuery(q) {
@@ -82,7 +90,10 @@ class WKnex extends CommonDAO {
 
   getId = async (id) => {
     const query = async (idx) => {
-      return await this.knex.from(this.table).select('*').where('id', '=', idx);
+      return await this.knex
+        .from(this.table)
+        .select('*')
+        .where(this.idQuery, '=', idx);
     };
 
     const resultado = await query(id);
@@ -90,9 +101,16 @@ class WKnex extends CommonDAO {
     return resultado[0];
   };
 
+  setIdQuery(idname) {
+    this.idQuery = idname;
+  }
+
   deleteById = async (id) => {
     const query = async (idx) => {
-      return await this.knex(this.table).where({ id: idx }).del();
+      if (this.trx) {
+        return await this.trx(this.table).where(this.idQuery, idx).del();
+      }
+      return await this.knex(this.table).where(this.idQuery, idx).del();
     };
 
     const resultado = await query(id);
@@ -100,9 +118,26 @@ class WKnex extends CommonDAO {
     return resultado;
   };
 
-  updateById = async (id, producto) => {
+  delete = async (item) => {
     const query = async (idx) => {
-      return await this.knex(this.table).where({ id: idx }).update(producto);
+      if (this.trx) {
+        return await this.trx(this.table).where(this.idQuery, item.id).del();
+      }
+      return await this.knex(this.table).where(this.idQuery, item.id).del();
+    };
+
+    const resultado = await query(item.id);
+
+    return resultado;
+  };
+
+  updateById = async (id, item) => {
+    const query = async (idx) => {
+      if (this.trx) {
+        return await this.trx(this.table).where(this.idQuery, idx).update(item);
+      }
+
+      return await this.knex(this.table).where(this.idQuery, idx).update(item);
     };
 
     const resultado = await query(id);
@@ -116,13 +151,96 @@ class WKnex extends CommonDAO {
 
   save = async (p) => {
     const query = async (item) => {
+      if (this.trx) {
+        return await this.trx(this.table).insert(item);
+      }
       return await this.knex(this.table).insert(item);
     };
 
     const resultado = await query(p);
+
+    return resultado[0];
   };
 
+  transaction = async () => {
+    try {
+      this.trxProvider = this.knex.transactionProvider();
+      this.trx = await this.trxProvider();
+      return this.trx;
+    } catch (error) {
+      throw Error(error);
+    }
+  };
+
+  getTransactionGenerated() {
+    return this.trxProvider;
+  }
+
+  setTransactionGenerated(t) {
+    this.trxProvider = t;
+  }
+
+  getTransactionProvider() {
+    return this.transactionProvider;
+  }
+
+  setTransactionProvider(t) {
+    this.transactionProvider = t;
+  }
+
+  isCompletedTransaction() {
+    return this.trx.isCompleted();
+  }
+
+  setTrx(t) {
+    this.trx = t;
+  }
+
+  commit() {
+    try {
+      this.trx.commit();
+    } catch (error) {
+      throw Error(error);
+    }
+  }
+
+  rollback() {
+    try {
+      this.trx.rollback();
+    } catch (error) {
+      throw Error(error);
+    }
+  }
+
+  reuseTransaction = async () => {
+    try {
+      this.trx = await this.trxProvider();
+      return this.trx;
+    } catch (error) {
+      throw Error(error);
+    }
+  };
+
+  find = async (custom) => {
+    const query = async (query_value, idx) => {
+      return await this.knex
+        .from(this.table)
+        .select('*')
+        .where(query_value, '=', idx);
+    };
+
+    const resultado = await query(custom.query.key, custom.query.value);
+
+    return resultado[0];
+  };
   searchItem(value, expression_equal) {}
+
+  init() {}
+
+  loadConfiguration = async (...args) => {
+    this.setTable(args[0]);
+    this.setIdQuery('id');
+  };
 }
 
 module.exports = WKnex;

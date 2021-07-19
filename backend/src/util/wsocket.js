@@ -1,20 +1,10 @@
-// const ProductoService = require('../services/producto-sevice.js');
-
-// const ArchivoRepository = require('../repository/archivo-repository');
-
-// const service = new ProductoService();
-
-// const PATH_DB = process.env.DBPATHSOCKET || '/db/storage.db';
-
-// const archivo = new ArchivoRepository(PATH_DB);
-
 const config = require('../config/index');
 
 const MessageRepository = require('../repository/message-repository');
 
-const repo = new MessageRepository(config.dbmsg);
+const repo = new MessageRepository(config.db);
 
-const vector = [];
+//const vector = [];
 
 const TOTAL = 100;
 
@@ -77,7 +67,7 @@ class WSocket {
     */
 
     canal.on('getmessages', async () => {
-      const items = await repo.getSource().getItems();
+      const items = await repo.getItems();
       canal.emit('reloadmsgs', items);
     });
 
@@ -89,7 +79,7 @@ class WSocket {
           user: data.user,
         };
 
-        vector.push(feeback);
+        //vector.push(feeback);
         //await archivo.save(vector);
         await repo.save(feeback);
         canal.broadcast.emit('reloadmsg', feeback);

@@ -48,6 +48,9 @@ export class MessageclientService {
 
   //Se emite un mensaje remoto hacia el server para que lo replique
   newMessage(m:MessageUser) {
+
+    this.messagesLocal.push(m);
+    this.messages$.next(this.messagesLocal);
     this.socket.emit('appendmsg', m);
   }
 
@@ -55,6 +58,7 @@ export class MessageclientService {
 
 export interface MessageUser {
   id?:number;
+  _id?:string;
   msg:string;
   user:string;
   tiempo:string;

@@ -19,6 +19,7 @@ export class CarritoProductosComponent implements OnInit {
     .subscribe(
       products => {
         this.productos = products;
+        this._carritoService.update(this.productos);
       },
       error => {
         console.log(error);
@@ -26,17 +27,14 @@ export class CarritoProductosComponent implements OnInit {
 
   }
 
-  eliminarProducto(index:number){
+  eliminarProducto(item:Carrito){
 
-    if (index>=0){
+    if (item){
 
-      const carrito:any = this.productos[index];
 
-      const idx = carrito.producto.id;
-
-      this._carritoService.deleteProducto(Number(idx)).subscribe(
+      this._carritoService.deleteProducto(item.id).subscribe(
         products => {
-          this._carritoService.notifyDeleteSubcriptor(Number(idx));
+          this._carritoService.notifyDeleteSubcriptor(item.id);
           this.router.navigate(["/productos"]);
         },
         error => {

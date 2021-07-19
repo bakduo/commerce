@@ -12,9 +12,9 @@ import { ProductoService } from '../services/producto.service';
 export class ProductoTarjetaComponent implements OnInit {
 
   @Input() producto: any = {};
-  @Input() index: number | undefined;
+  @Input() index: any | undefined;
 
-  @Output() productoSeleccionado: EventEmitter<number>;
+  @Output() productoSeleccionado: EventEmitter<any>;
 
   role:boolean = false;
 
@@ -36,7 +36,7 @@ export class ProductoTarjetaComponent implements OnInit {
   }
 
   eliminarProducto(){
-      this._productoService.deleteProducto(Number(this.index)).subscribe(
+      this._productoService.deleteProducto(this.index).subscribe(
         response => {
           this.router.navigate(["/"]);
         },
@@ -51,9 +51,9 @@ export class ProductoTarjetaComponent implements OnInit {
 
   agregarCarrito(){
 
-    this._carritoService.addProducto(Number(this.index)).subscribe(
+    this._carritoService.addProducto(this.index).subscribe(
       response => {
-        this._carritoService.notifySubcriptor(Number(this.index));
+        this._carritoService.notifySubcriptor(this.index);
       },
       error => {
         console.log(error);

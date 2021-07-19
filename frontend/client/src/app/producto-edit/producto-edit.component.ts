@@ -12,13 +12,13 @@ export class ProductoEditComponent implements OnInit {
 
   formProducto: FormGroup;
 
-  index:number;
+  index:any;
 
   producto:any = {};
 
   constructor(private router:Router,private fb: FormBuilder,private activatedRoute: ActivatedRoute,private _productoService:ProductoService) {
 
-    this.index = -1;
+    this.index;
 
     this.formProducto = this.fb.group({
       name  : ['', [ Validators.required, Validators.minLength(5) ]  ],
@@ -54,7 +54,7 @@ export class ProductoEditComponent implements OnInit {
           console.log(error);
         });
 
-      this.index = Number(params['id']);
+      this.index = params['id'];
 
     });
 

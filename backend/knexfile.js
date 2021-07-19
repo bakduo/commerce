@@ -8,7 +8,6 @@ dotenv.config({
   path: path.resolve('./', process.env.NODE_ENV + '.env'),
 });
 
-
 //For production please use Secrets or file by secrets not enviroments variable
 //
 module.exports = {
@@ -19,6 +18,7 @@ module.exports = {
   //   },
   //   useNullAsDefault: true,
   // },
+
   development: {
     client: 'mysql',
     connection: {

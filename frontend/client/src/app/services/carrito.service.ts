@@ -11,8 +11,8 @@ import { Producto } from './producto.service';
 export class CarritoService {
 
   private url = 'http://localhost:8080/api/carrito';
-  productos:number[] = [];
-  private productos$: Subject<number[]> = new Subject<number[]>();
+  productos:any[] = [];
+  private productos$: Subject<any[]> = new Subject<any[]>();
 
   hash:string = '';
 
@@ -20,52 +20,53 @@ export class CarritoService {
     this.hash = "ryvb4aqbbsHireHWlPQfxxqDHQJo6YkVYhE9imKt0b8=";
   }
 
-  notifySubcriptor(idx:number){
+  notifySubcriptor(idx:any){
     this.productos.push(idx);
     this.productos$.next(this.productos);
   }
 
-  notifyDeleteSubcriptor(idx:number){
-    this.productos = this.productos.filter((item)=>item===idx);
-    this.productos$.next(this.productos);
+  notifyDeleteSubcriptor(idx:any){
+   this.productos = this.productos.filter((item)=>item.id!==idx);
+   this.productos$.next(this.productos);
   }
 
-  update(p:number[]){
+  update(p:Carrito[]){
     this.productos = p;
-    this.productos$.next(this.productos);
+    this.productos$.next(p);
   }
 
 
-  addProducto(idx:number){
+  addProducto(idx:any){
       return this.http.post(`${ this.url }/agregar/${idx}`,{});
   }
 
   private customResponse( carritoObj: any ) {
 
-    const productos: Carrito[] = [];
-    const productosId: number[] = [];
+    const productosTemp: Carrito[] = [];
 
     Object.keys( carritoObj ).forEach( key => {
 
       const item: Carrito = carritoObj[key];
-      productos.push( item );
+      if (item._id){
+        item['id'] = item._id;
+      }
+      productosTemp.push( item );
     });
 
-    productos.forEach((item)=>productosId.push(Number(item.producto.id)));
-    return productosId;
+    return productosTemp;
 
   }
 
-  getProductosUpdate(){
+  // getProductosUpdate(){
 
-    return this.http.get(`${ this.url }/listar`).pipe(
-      map( this.customResponse ),
-      delay(0)
-    );
+  //   return this.http.get(`${ this.url }/listar`).pipe(
+  //     map( this.customResponse ),
+  //     delay(0)
+  //   );
 
-  }
+  // }
 
-  getProductos$():Observable<number[]>{
+  getProductos$():Observable<any[]>{
     return this.productos$.asObservable();
   }
 
@@ -82,14 +83,18 @@ export class CarritoService {
   }
 
   getProductos(): Observable<any>{
-    return this.http.get(`${ this.url }/listar`);
+    return this.http.get(`${ this.url }/listar`).pipe(
+      map( this.customResponse ),
+      delay(0)
+    );
   }
 
-  getProducto(id:number,name:string){
-    return this.http.get(`${ this.url }/listar/${this.hash}/${id}?name=${name}`);
+  getProducto(id:any){
+    //return this.http.get(`${ this.url }/listar/${this.hash}?name=${name}`);
+    return this.http.get(`${ this.url }/listar/${id}`);
   }
 
-  deleteProducto(id:number){
+  deleteProducto(id:any){
     return this.http.delete(`${ this.url }/borrar/${id}`);
   }
 }
@@ -97,6 +102,13 @@ export class CarritoService {
 
 export interface Carrito {
   id?:string,
-  timestamp:number,
-  producto: Producto
+  _id?:string,
+  title:string;
+  thumbail:string;
+  price:number;
+  timestamp:number;
+  name:string;
+  description:string;
+  stock:number;
+  code:number;
 }

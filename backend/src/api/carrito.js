@@ -1,21 +1,15 @@
 // Controller routes
 
-const config = require('../config/index');
-
-const Carrito = require('../model/carrito');
-
 class CarritoController {
   constructor(repository, repositoryProductos) {
     this.repo = repository;
     this.productos = repositoryProductos;
-    //memory fake
-    this.repo.getProductos();
   }
 
   getProductos = async (req, res, next) => {
     try {
-      //const carrito = new Cart(req.session.cart ? req.session.cart : {});
-      const productos = this.repo.getSource().getItems();
+      const productos = await this.repo.getItems();
+
       if (productos === null) {
         return res.status(400).json({ status: 'No hay productos cargados' });
       }
@@ -28,16 +22,10 @@ class CarritoController {
   getProducto = async (req, res, next) => {
     try {
       if (req.params.id) {
-        const nameProducto = req.query.name;
-        const carritoID = req.carrito;
-        const productos = this.repo.getSource().getItems();
-        if (String(req.params.id) === String(carritoID)) {
-          const producto = productos.find(
-            (item) => item.producto.name === nameProducto
-          );
-          if (producto) {
-            return res.status(200).json(producto);
-          }
+        const producto = await this.repo.getId(req.params.id);
+
+        if (producto) {
+          return res.status(200).json(producto);
         }
       }
 
@@ -50,18 +38,33 @@ class CarritoController {
   addProducto = async (req, res, next) => {
     try {
       if (req.params.id) {
-        //get producto DB fake
-        const producto = await this.productos
-          .getSource()
-          .getId(Number(req.params.id));
-        if (producto) {
-          const carritoID = req.carrito;
+        const producto = await this.productos.getId(req.params.id);
 
-          const carrito_con_producto = Carrito.getCarrito(carritoID, producto);
+        const existe = await this.repo.include(
+          producto.code,
+          (item, codigo) => {
+            return item.code === Number(codigo);
+          }
+        );
 
-          await this.repo.save(carrito_con_producto);
+        if (!existe.status) {
+          const record = {
+            timestamp: Math.floor(Date.now() / 1000),
+            carrito_session: req.carrito,
+            title: producto.title,
+            price: producto.price,
+            stock: producto.stock,
+            code: producto.code,
+            name: producto.name,
+            thumbail: producto.thumbail,
+            description: producto.description,
+          };
+
+          await this.repo.save(record);
 
           return res.status(200).json(producto);
+        } else {
+          return res.status(208).json({ status: 'Producto already exists.' });
         }
       }
       return res.status(400).json({ status: 'Producto not found.' });
@@ -73,26 +76,17 @@ class CarritoController {
   deleteProducto = async (req, res, next) => {
     try {
       if (req.params.id) {
-        //const carritoID = req.carrito;
+        const carrito = await this.repo.getId(req.params.id);
 
-        const productos = this.repo.getSource().getItems();
-
-        this.repo
-          .getSource()
-          .replaceAll(
-            productos.filter(
-              (item) => item.producto.id !== Number(req.params.id)
-            )
-          );
-
-        await this.repo.getSource().sync();
-
-        return res.status(200).json({ producto: req.params.id });
+        if (carrito) {
+          const eliminado = await this.repo.deleteById(req.params.id);
+          if (eliminado) {
+            return res.status(200).json(eliminado);
+          }
+        }
       }
 
-      return res
-        .status(400)
-        .json({ status: 'Producto no encontrado para eliminar' });
+      return res.status(400).json({ status: 'Producto not found' });
     } catch (error) {
       return res.status(500).json({ error: `${error}` });
     }
