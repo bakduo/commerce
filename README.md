@@ -13,6 +13,7 @@ API project
 - [x] fake-auth
 - [x] fake-role
 - [x] Knex builder SQL
+- [x] mongo persistence
 - [x] migration schema
 - [ ] OpenAPI spec
 
