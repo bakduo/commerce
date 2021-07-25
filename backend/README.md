@@ -29,56 +29,46 @@ Para el caso de uso de dbstore se usan reposositorys y como no hay DB store mong
 Configura variables example:
 
 ```
-mkdir db;
 
-dev:
+sqlite.env
 
-PORT=8082
-DBTYPE="memory" or file
-DBPATH=""
-DBPATHPRODUCTOS="db/store_dev.json"
-DBPATHCARRITO="db/store_carrito_dev.json"
+PORT=8080
+DBTYPE_PRINCIPAL="sqlite"
 
-test:
+nosql.env
 
-PORT=8081
-DBTYPE="file" or file
-DBPATH=""
-DBPATHPRODUCTOS="db/store_test.json"
-DBPATHCARRITO="db/store_carrito_test.json"
-```
+PORT=8080
 
-# Run dev
+DBTYPE_PRINCIPAL="mongo"
+DBTYPE_PRINCIPAL_USER="user"
+DBTYPE_PRINCIPAL_DBNAME="db"
+DBTYPE_PRINCIPAL_PASSWD="pass"
+DBTYPE_PRINCIPAL_HOST="server"
+DBTYPE_PRINCIPAL_PORT=puerto
 
-```
 
-npm run dev
+mysql.env
+
+PORT=8080
+DBTYPE_PRINCIPAL="mysql"
+DBTYPE_PRINCIPAL_USER="user"
+DBTYPE_PRINCIPAL_DBNAME="database"
+DBTYPE_PRINCIPAL_PASSWD="pass"
+DBTYPE_PRINCIPAL_HOST="server"
+DBTYPE_PRINCIPAL_PORT=puerto
+
+
+mkdir db 
+
+npm run sqlite
+
+npm run nosql
+
+npm run mysql
+
+PD: Remember appy migrate knex for persistence
 
 ```
 
 # Run test
-
-```
-mkdir db
-
-npm run test
-
-```
-
-# Run prod fake
-
-production.env
-
-```
-mkdir db
-
-PORT=8080
-DBTYPE="memory" or file
-DBPATH=""
-DBPATHPRODUCTOS="db/store.json"
-DBPATHCARRITO="db/store_carrito.json"
-
-npm start
-
-```
 
