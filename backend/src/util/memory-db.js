@@ -2,9 +2,9 @@ const ArchivoRepository = require('../repository/archivo-repository');
 
 const path = require('path');
 
-const CommonDAO = require('./commondao');
+const GenericDB = require('./genericdb');
 
-class MemoryDB extends CommonDAO {
+class MemoryDB extends GenericDB {
   constructor(method) {
     try {
       super();

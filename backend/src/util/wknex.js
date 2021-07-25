@@ -1,6 +1,6 @@
-const CommonDAO = require('./commondao');
+const GenericDB = require('./genericdb');
 
-class WKnex extends CommonDAO {
+class WKnex extends GenericDB {
   constructor(method) {
     try {
       super();

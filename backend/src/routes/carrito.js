@@ -8,13 +8,13 @@ const config = require('../config/index');
 
 const CheckCarrito = require('../middleware/check-carrito');
 
-const CarritoRepository = require('../repository/carrito-repository');
+const CarritoDAO = require('../dao/carrito-dao');
 
-const ProductoRepository = require('../repository/producto-repository');
+const ProductoDAO = require('../dao/producto-dao');
 
-const repo = new CarritoRepository(config.db);
+const repo = new CarritoDAO(config.db);
 
-const repoProductos = new ProductoRepository(config.db);
+const repoProductos = new ProductoDAO(config.db);
 
 const controller = new CarritoController(repo, repoProductos);
 

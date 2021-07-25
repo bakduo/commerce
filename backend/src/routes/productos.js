@@ -2,7 +2,9 @@ const express = require('express');
 
 const ProductoController = require('../api/productos');
 
-const ProductoRepository = require('../repository/producto-repository');
+//const ProductoRepository = require('../repository/producto-repository');
+
+const ProductoDAO = require('../dao/producto-dao');
 
 const routerProduct = express.Router();
 
@@ -16,7 +18,7 @@ const control = new CustomOrigin();
 
 const controlProducto = new CheckProducto();
 
-const repo = new ProductoRepository(config.db);
+const repo = new ProductoDAO(config.db);
 
 const controller = new ProductoController(repo);
 /** ***************** */

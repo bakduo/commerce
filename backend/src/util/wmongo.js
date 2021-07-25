@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
-const CommonDAO = require('./commondao');
+const GenericDB = require('./genericdb');
 
-class WMongo extends CommonDAO {
+class WMongo extends GenericDB {
   constructor(method) {
     super();
     this.mongoClient = mongoose;
@@ -12,6 +12,8 @@ class WMongo extends CommonDAO {
     this.model = {};
     this.query = '';
     this.init();
+    this.secure = `${process.env.SECURE}`;
+    this.models = JSON.parse(`${process.env.SCHEMA_NOSQL}`);
   }
 
   init() {
@@ -27,11 +29,19 @@ class WMongo extends CommonDAO {
 
   async connect() {
     try {
-      await this.mongoClient.connect(this.url, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        ssl: true,
-      });
+      if (Number(this.secure) === 1) {
+        await this.mongoClient.connect(this.url, {
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
+          ssl: true,
+        });
+      } else {
+        await this.mongoClient.connect(this.url, {
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
+          ssl: false,
+        });
+      }
 
       this.mongoClient.connection.on('open', () => {
         // Wait for mongodb connection before server starts
@@ -150,7 +160,10 @@ class WMongo extends CommonDAO {
 
   loadConfiguration = async (...args) => {
     this.setTable(args[0]);
-    this.setModel(await this.generateModel(args[1], args[2]));
+
+    const nameModule = require('../model/' + this.models[args[0]]);
+
+    this.setModel(await this.generateModel(args[0], nameModule));
   };
 
   searchItem = async (value, expression_equal) => {

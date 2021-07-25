@@ -1,10 +1,8 @@
 const config = require('../config/index');
 
-const MessageRepository = require('../repository/message-repository');
+const MessageDAO = require('../dao/message-dao');
 
-const repo = new MessageRepository(config.db);
-
-//const vector = [];
+const repo = new MessageDAO(config.db);
 
 const TOTAL = 100;
 
@@ -36,36 +34,6 @@ class WSocket {
   }
 
   addOperation(canal) {
-    /*canal.on('procesar', (data) => {
-      const producto = {
-        title: data.title,
-        price: data.price,
-        thumbail: data.thumbail,
-      };
-
-      service.addProducto(producto);
-      const items = service.getProductos();
-      //client
-      canal.emit('renderproductos', items);
-      //all broadcast
-      canal.broadcast.emit('renderproductos', items);
-    });
-
-    canal.on('getproductos', (data) => {
-      //client
-      const items = service.getProductos();
-      canal.emit('renderproductos', items);
-    });
-
-    */
-    /*
-    canal.on('getmsg', async (data) => {
-      //client
-      const items = await archivo.readFile();
-      canal.emit('rendermsg', items);
-    });
-    */
-
     canal.on('getmessages', async () => {
       const items = await repo.getItems();
       canal.emit('reloadmsgs', items);
@@ -79,8 +47,6 @@ class WSocket {
           user: data.user,
         };
 
-        //vector.push(feeback);
-        //await archivo.save(vector);
         await repo.save(feeback);
         canal.broadcast.emit('reloadmsg', feeback);
         contador++;

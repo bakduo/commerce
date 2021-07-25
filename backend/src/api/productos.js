@@ -1,5 +1,9 @@
 // Controller routes
 
+const FilterProductos = require('../util/busquedas/filter-productos');
+
+const IncludeProductos = require('../util/busquedas/include-productos');
+
 class ProductoController {
   constructor(repository) {
     this.repo = repository;
@@ -26,7 +30,8 @@ class ProductoController {
       let items = null;
 
       if (Object.keys(req.query).length > 0) {
-        items = await this.repo.find(req.query);
+        const search = new FilterProductos(this.repo);
+        items = await search.execute(req.query);
       } else {
         items = await this.repo.getItems();
       }
@@ -64,12 +69,10 @@ class ProductoController {
       }
 
       if (req.body) {
-        const existe = await this.repo.include(
-          req.body.code,
-          (item, codigo) => {
-            return item.code === Number(codigo);
-          }
-        );
+        const search = new IncludeProductos(this.repo);
+        const existe = await search.execute(req.body.code, (item, codigo) => {
+          return item.code === Number(codigo);
+        });
 
         if (!existe.status) {
           const tmp1 = await this.repo.save(req.body);

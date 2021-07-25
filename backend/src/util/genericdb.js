@@ -1,4 +1,4 @@
-class CommonDAO {
+class GenericDB {
   //caso ejemplo una DB memory
 
   constructor() {}
@@ -56,4 +56,4 @@ class CommonDAO {
   };
 }
 
-module.exports = CommonDAO;
+module.exports = GenericDB;
