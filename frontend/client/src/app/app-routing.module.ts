@@ -1,3 +1,5 @@
+import { SignupComponent } from './signup/signup.component';
+import { LoginComponent } from './login/login.component';
 import { CarritoProductosComponent } from './carrito-productos/carrito-productos.component';
 import { HomeComponent } from './home/home.component';
 import { NgModule } from '@angular/core';
@@ -11,11 +13,13 @@ import {ControlRoutesGuard} from './control-routes.guard';
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
-  { path: 'productos', component: ProductosComponent },
-  { path: 'producto/:id', component: ProductoComponent },
+  { path: 'productos', component: ProductosComponent,canActivate:[ControlRoutesGuard] },
+  { path: 'producto/:id', component: ProductoComponent,canActivate:[ControlRoutesGuard] },
   { path: 'producto-create', component: ProductoCreateComponent,canActivate:[ControlRoutesGuard] },
   { path: 'producto-edit/:id', component: ProductoEditComponent,canActivate:[ControlRoutesGuard] },
-  { path: 'carrito', component: CarritoProductosComponent },
+  { path: 'carrito', component: CarritoProductosComponent,canActivate:[ControlRoutesGuard] },
+  { path: 'login', component: LoginComponent },
+  { path: 'signup', component: SignupComponent },
   { path: '**', pathMatch: 'full', redirectTo: 'home' }
 ];
 

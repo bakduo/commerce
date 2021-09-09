@@ -17,8 +17,8 @@ export class ProductoCreateComponent implements OnInit {
     private _productoService:ProductoService) {
 
       this.formProducto = this.fb.group({
-        name  : ['', [ Validators.required, Validators.minLength(5) ]  ],
-        title  : ['', [ Validators.required, Validators.minLength(5) ]  ],
+        name  : ['', [ Validators.required, Validators.minLength(3) ]  ],
+        title  : ['', [ Validators.required, Validators.minLength(3) ]  ],
         description: ['', [Validators.required ] ],
         thumbail : ['',[Validators.required ]],
         stock   : [0, Validators.required ],

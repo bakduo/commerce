@@ -15,13 +15,17 @@ API project
 - [x] Knex builder SQL
 - [x] mongo persistence
 - [x] migration schema
+- [x] soporte token
+- [x] soporte sms
+- [x] soporte para enviar mails
+- [x] funcioalidad de carrito
+- [x] guardas de acceso
 - [ ] OpenAPI spec
 
 # Backend
 
 - [x] NodeJS
 - [x] Express
-- [ ] TS
 
 # Frontend
 

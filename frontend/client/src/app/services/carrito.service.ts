@@ -1,23 +1,25 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
 import { Producto } from './producto.service';
 
-
+import { environment } from 'src/environments/environment';
+import { TokenService } from './token.service';
 @Injectable({
   providedIn: 'root'
 })
 export class CarritoService {
 
-  private url = 'http://localhost:8080/api/carrito';
+  private url = environment.backend + '/api/carrito';
+
   productos:any[] = [];
   private productos$: Subject<any[]> = new Subject<any[]>();
 
-  hash:string = '';
+  //hash:string = '';
 
-  constructor(private http: HttpClient) {
-    this.hash = "ryvb4aqbbsHireHWlPQfxxqDHQJo6YkVYhE9imKt0b8=";
+  constructor(private http: HttpClient,private _tokenService:TokenService) {
+    //this.hash = "ryvb4aqbbsHireHWlPQfxxqDHQJo6YkVYhE9imKt0b8=";
   }
 
   notifySubcriptor(idx:any){
@@ -35,9 +37,18 @@ export class CarritoService {
     this.productos$.next(p);
   }
 
-
   addProducto(idx:any){
-      return this.http.post(`${ this.url }/agregar/${idx}`,{});
+    let headersCustom = new HttpHeaders()
+    .set('content-type','application/json')
+    .append('Authorization','Bearer '+this._tokenService.getTokenRaw());
+      return this.http.post(`${ this.url }/agregar/${idx}`,{},{headers: headersCustom});
+  }
+
+  makeAndOrder(){
+    let headersCustom = new HttpHeaders()
+    .set('content-type','application/json')
+    .append('Authorization','Bearer '+this._tokenService.getTokenRaw());
+      return this.http.post(`${ this.url }/realizarpedido`,{},{headers: headersCustom});
   }
 
   private customResponse( carritoObj: any ) {
@@ -70,20 +81,23 @@ export class CarritoService {
     return this.productos$.asObservable();
   }
 
-  setHash(h:string){
-    this.hash = h;
-  }
+  // setHash(h:string){
+  //   this.hash = h;
+  // }
 
-  getHash(){
-    return this.hash;
-  }
+  // getHash(){
+  //   return this.hash;
+  // }
 
   getSize(){
     return this.productos.length;
   }
 
   getProductos(): Observable<any>{
-    return this.http.get(`${ this.url }/listar`).pipe(
+    let headersCustom = new HttpHeaders()
+    .set('content-type','application/json')
+    .append('Authorization','Bearer '+this._tokenService.getTokenRaw());
+    return this.http.get(`${ this.url }/listar`,{headers: headersCustom}).pipe(
       map( this.customResponse ),
       delay(0)
     );
@@ -95,7 +109,10 @@ export class CarritoService {
   }
 
   deleteProducto(id:any){
-    return this.http.delete(`${ this.url }/borrar/${id}`);
+    let headersCustom = new HttpHeaders()
+    .set('content-type','application/json')
+    .append('Authorization','Bearer '+this._tokenService.getTokenRaw());
+    return this.http.delete(`${ this.url }/borrar/${id}`,{headers: headersCustom});
   }
 }
 

@@ -1,6 +1,6 @@
-const MemoryDB = require('../util/memory-db');
-const WKnex = require('../util/wknex');
-const WMongo = require('../util/wmongo');
+const MemoryDB = require('./storage/memory-db');
+const WKnex = require('./storage/wknex');
+const WMongo = require('./storage/wmongo');
 
 class DBCustom {
   constructor(config) {
@@ -27,9 +27,13 @@ class DBCustom {
         });
         break;
       case 'mongo':
-        this.store = new WMongo({
-          type: 'nosql',
-        });
+        this.store = new WMongo(
+          this.type.url,
+          this.type.dbname,
+          this.type.secure,
+          this.type.schema,
+          this.type.logger
+        );
         break;
 
       default:

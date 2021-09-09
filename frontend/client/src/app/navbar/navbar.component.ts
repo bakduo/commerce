@@ -1,3 +1,4 @@
+import { TokenService } from './../services/token.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
@@ -21,7 +22,7 @@ export class NavbarComponent implements OnInit,OnDestroy {
 
   filterList: any = ['name', 'code', 'stock','price']
 
-  constructor(private fb: FormBuilder,private _controlService:ControlauthService,private _carritoService:CarritoService,private _productoService:ProductoService,private router:Router) {
+  constructor(private _tokenService:TokenService,private fb: FormBuilder,private _controlService:ControlauthService,private _carritoService:CarritoService,private _productoService:ProductoService,private router:Router) {
 
     this.productosCarrito$ = this._carritoService.getProductos$();
 
@@ -51,15 +52,29 @@ export class NavbarComponent implements OnInit,OnDestroy {
 
   }
 
+  getAuth(){
+    try {
+      if (this._tokenService.getToken()){
+        return true
+      }
+      return false
+    } catch (error) {
+      throw new Error("No es posible obtener el auth");
+    }
+  }
+
   get f(){
     return this.form.controls;
   }
 
 
+  logout(){
+    this._tokenService.clearToken();
+    this.router.navigate( ['/'] );
+  }
 
   changerole():void{
     this._controlService.switchRole();
-
   }
 
   clearFilter(){
@@ -72,6 +87,22 @@ export class NavbarComponent implements OnInit,OnDestroy {
       this._productoService.setFilter(this.form.value.filter,this.form.value.valuefilter);
       this.router.navigate( ['/'] );
     }
+
+  }
+
+  realizarpedido(){
+    this._carritoService.makeAndOrder()
+    .subscribe(
+      (response:any) => {
+        if (response.SUCCESS){
+            alert("Su pedido esta en proceso...")
+        }else{
+          alert(response.fail);
+        }
+      },
+      error => {
+        console.log(error);
+      });
 
   }
 

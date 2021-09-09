@@ -1,12 +1,18 @@
 const express = require('express');
 
 const CarritoController = require('../api/carrito');
+const passport = require('passport');
+const WPassport = require('../middleware/wpassport');
+const UserDAO = require('../dao/user-dao');
+const CredentialDAO = require('../dao/credential-dao');
 
 const routerCarrito = express.Router();
 
 const config = require('../config/index');
 
-const CheckCarrito = require('../middleware/check-carrito');
+const userrepo = new UserDAO(config.db);
+
+const credentialrepo = new CredentialDAO(config.db);
 
 const CarritoDAO = require('../dao/carrito-dao');
 
@@ -18,28 +24,39 @@ const repoProductos = new ProductoDAO(config.db);
 
 const controller = new CarritoController(repo, repoProductos);
 
-const mcarrito = new CheckCarrito();
+const wpassport = new WPassport(userrepo, credentialrepo);
+wpassport.init();
 
-/** ****Control router************ */
+/******Control router*************/
 
-routerCarrito.get('/listar', mcarrito.controlCarrito, controller.getProductos);
+routerCarrito.get(
+  '/listar',
+  passport.authenticate('jwt', { session: false }),
+  controller.getProductos
+);
 
 routerCarrito.get(
   '/listar/:id',
-  mcarrito.controlCarrito,
+  passport.authenticate('jwt', { session: false }),
   controller.getProducto
 );
 
 // Same as loopback middleware
 routerCarrito.post(
   '/agregar/:id',
-  mcarrito.controlCarrito,
+  passport.authenticate('jwt', { session: false }),
   controller.addProducto
+);
+
+routerCarrito.post(
+  '/realizarpedido',
+  passport.authenticate('jwt', { session: false }),
+  controller.makeAndOrder
 );
 
 routerCarrito.delete(
   '/borrar/:id',
-  mcarrito.controlCarrito,
+  passport.authenticate('jwt', { session: false }),
   controller.deleteProducto
 );
 /** ******************************* */

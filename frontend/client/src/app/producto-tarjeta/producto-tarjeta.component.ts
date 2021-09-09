@@ -1,3 +1,4 @@
+import { TokenService, TokenUser } from './../services/token.service';
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { CarritoService } from '../services/carrito.service';
@@ -16,19 +17,31 @@ export class ProductoTarjetaComponent implements OnInit {
 
   @Output() productoSeleccionado: EventEmitter<any>;
 
-  role:boolean = false;
+  //role:boolean = false;
 
-  constructor(private _carritoService:CarritoService, private _controlService:ControlauthService ,private router:Router,private _productoService:ProductoService) {
+  constructor(private _tokenService:TokenService,private _carritoService:CarritoService,private router:Router,private _productoService:ProductoService) {
     this.productoSeleccionado = new EventEmitter();
     this.index = -1;
-    this.role = _controlService.getRole();
+    //this.role = _controlService.getRole();
   }
 
   ngOnInit(): void {
   }
 
   getRole(){
-    return this.role;
+    //return this.role;
+    if (this.getAuth().role=='admin'){
+      return true
+    }
+    return false;
+  }
+
+  getAuth():TokenUser{
+    try {
+      return this._tokenService.getToken();
+    } catch (error) {
+      throw new Error("No es posible obtener el auth");
+    }
   }
 
   verProducto(){

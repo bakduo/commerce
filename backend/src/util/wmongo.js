@@ -11,9 +11,9 @@ class WMongo extends GenericDB {
     this.collection = '';
     this.model = {};
     this.query = '';
-    this.init();
     this.secure = `${process.env.SECURE}`;
     this.models = JSON.parse(`${process.env.SCHEMA_NOSQL}`);
+    this.init();
   }
 
   init() {

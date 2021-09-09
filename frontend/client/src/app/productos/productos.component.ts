@@ -1,7 +1,9 @@
+import { TokenUser } from './../services/token.service';
 import { Component, OnInit } from '@angular/core';
 import { Producto, ProductoService } from '../services/producto.service';
 import { Router } from '@angular/router';
 import { ControlauthService } from '../services/controlauth.service';
+import { TokenService } from '../services/token.service';
 
 @Component({
   selector: 'app-productos',
@@ -14,7 +16,7 @@ export class ProductosComponent implements OnInit {
   productos:Producto[] = [];
   role:boolean =false;
 
-  constructor(private _controlService:ControlauthService ,private _productoService:ProductoService,private router:Router) {
+  constructor(private _tokenService:TokenService,private _controlService:ControlauthService ,private _productoService:ProductoService,private router:Router) {
 
   }
 
@@ -34,7 +36,15 @@ export class ProductosComponent implements OnInit {
   }
 
   getRole(){
-    return this.role;
+    //return this.role;
+    if (this.getAuth().role=="admin"){
+      return true
+    }
+    return false;
+  }
+
+  getAuth():TokenUser{
+    return this._tokenService.getToken();
   }
 
   verProducto( idx:any ){

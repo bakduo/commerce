@@ -1,3 +1,4 @@
+import { TokenService } from './services/token.service';
 import { configSocket } from './../environments/environment';
 
 import { BrowserModule } from '@angular/platform-browser';
@@ -22,6 +23,8 @@ import { CarritoProductosComponent } from './carrito-productos/carrito-productos
 import { MensajesUsuariosComponent } from './mensajes-usuarios/mensajes-usuarios.component';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { environment } from 'src/environments/environment';
+import { LoginComponent } from './login/login.component';
+import { SignupComponent } from './signup/signup.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +38,9 @@ import { environment } from 'src/environments/environment';
     ProductoCreateComponent,
     ProductoEditComponent,
     CarritoProductosComponent,
-    MensajesUsuariosComponent  ],
+    MensajesUsuariosComponent,
+    LoginComponent,
+    SignupComponent  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -44,7 +49,7 @@ import { environment } from 'src/environments/environment';
     HttpClientModule,
     SocketIoModule.forRoot(configSocket)
   ],
-  providers: [ProductoService,ControlauthService,CarritoService],
+  providers: [ProductoService,ControlauthService,CarritoService,TokenService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

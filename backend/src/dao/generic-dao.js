@@ -10,9 +10,17 @@ class GenericDAO {
     this.items.loadConfiguration(obj.getName());
   }
 
+  getModel() {
+    return this.items.getModel();
+  }
+
   init() {
     this.items = this.data.getStore();
   }
+
+  deleteAll = async () => {
+    return await this.items.deleteAll();
+  };
 
   getId = async (id) => {
     const item = await this.items.getId(id);
@@ -99,7 +107,7 @@ class GenericDAO {
     try {
       const result = await this.items.save(p);
       if (result) {
-        return p;
+        return result;
       }
       return null;
     } catch (error) {

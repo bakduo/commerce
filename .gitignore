@@ -61,4 +61,7 @@ frontend/client/typings
 # System Files
 frontend/client/.DS_Store
 frontend/client/Thumbs.db
+backend/logs/*
+backend/config/*.json
 
+backend/public/images/*

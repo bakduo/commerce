@@ -6,9 +6,10 @@ import { SocketIoConfig } from "ngx-socket-io";
 
 export const environment = {
   production: false,
+  backend: 'http://localhost:3000'
 };
 
-export const configSocket: SocketIoConfig = { url: 'http://localhost:8080', options: {} };
+export const configSocket: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
 /*
  * For easier debugging in development mode, you can import the following file

@@ -1,7 +1,10 @@
+import { TokenService } from './token.service';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map, delay } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+
+import { environment } from 'src/environments/environment';
 
 
 @Injectable({
@@ -10,13 +13,13 @@ import { Observable } from 'rxjs';
 export class ProductoService {
 
 
-  private url = 'http://localhost:8080/api/productos';
+  private url = environment.backend + '/api/productos';
 
   private productos:Producto[] = [];
 
   private filterStr = '';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient,private _tokenService:TokenService) { }
 
   private customResponse( productoObj: any ) {
 
@@ -65,10 +68,15 @@ export class ProductoService {
     return this.http.get(`${ this.url }/listar/${id}`);
   }
 
+  /*
+  Es neceario agregar para el token
+  Authorization: Bearer XXXXXX token
+  .append('x-api-custom','true');
+  */
   addProducto(p:Producto){
     let headersCustom = new HttpHeaders()
     .set('content-type','application/json')
-    .append('x-api-custom','true');
+    .append('Authorization','Bearer '+this._tokenService.getTokenRaw());
     return this.http.post(`${ this.url }/guardar`,p, {headers: headersCustom});
   }
 
@@ -76,14 +84,14 @@ export class ProductoService {
 
     let headersCustom = new HttpHeaders()
     .set('content-type','application/json')
-    .append('x-api-custom','true');
+    .append('Authorization','Bearer '+this._tokenService.getTokenRaw());
     return this.http.put(`${ this.url }/actualizar/${id}`,p,{headers: headersCustom});
   }
 
   deleteProducto(id:any){
     let headersCustom = new HttpHeaders()
     .set('content-type','application/json')
-    .append('x-api-custom','true');
+    .append('Authorization','Bearer '+this._tokenService.getTokenRaw());
     return this.http.delete(`${ this.url }/borrar/${id}`,{headers: headersCustom});
   }
 

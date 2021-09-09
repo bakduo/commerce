@@ -15,17 +15,29 @@
         <a class="nav-link" [routerLink]="['home']">Home</a>
       </li>
       <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" [routerLink]="['productos']">Productos</a>
+        <a *ngIf="getAuth()" class="nav-link" [routerLink]="['productos']">Productos</a>
       </li>
 
       <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" [routerLink]="['carrito']">Carrito {{(productosCarrito$ | async)?.length }}</a>
+        <a *ngIf="!getAuth()" class="nav-link" [routerLink]="['login']">Login</a>
+      </li>
+
+       <li class="nav-item" routerLinkActive="active">
+        <a *ngIf="!getAuth()" class="nav-link" [routerLink]="['signup']">Signup</a>
+      </li>
+
+
+      <li class="nav-item" routerLinkActive="active">
+        <a *ngIf="getAuth()" class="nav-link" [routerLink]="['carrito']">Carrito {{(productosCarrito$ | async)?.length }}</a>
       </li>
 
     </ul>
 
     <form class="form-inline">
-        <button (click)="changerole()" class="btn btn-outline-success my-2 my-sm-0" type="button">changerole</button>
+
+        <button *ngIf="getAuth()" class="btn btn-sm btn-outline-secondary" type="button" (click)="logout()" >Logout</button>
+        <button *ngIf="getAuth()" class="btn btn-sm btn-outline-secondary" type="button" (click)="realizarpedido()" >Realizar pedido</button>
+
     </form>
 
   </div>
