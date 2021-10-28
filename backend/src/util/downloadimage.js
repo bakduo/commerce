@@ -16,9 +16,7 @@ class DownloadImage {
     let client = http;
 
     const pathFile = this.path + filename;
-
-    console.log(pathFile);
-
+    
     if (url.toString().indexOf('https') === 0) {
       client = https;
     }

@@ -1,6 +1,6 @@
 const express = require('express');
 
-const ProductoController = require('../api/productos');
+const ProductoController = require('../controller/productos');
 const passport = require('passport');
 const WPassport = require('../middleware/wpassport');
 const UserDAO = require('../dao/user-dao');
@@ -26,8 +26,8 @@ const controller = new ProductoController(repo);
 const wpassport = new WPassport(userrepo, credentialrepo);
 wpassport.init();
 
-routerProduct.get('/vista', controller.getVista);
 routerProduct.get('/listar', controller.getProductos);
+
 routerProduct.get('/listar/:id', control.checkIdGet, controller.getProducto);
 
 routerProduct.post(
@@ -56,6 +56,7 @@ routerProduct.delete(
   ],
   controller.deleteProducto
 );
+
 /**********************************/
 
 module.exports = routerProduct;

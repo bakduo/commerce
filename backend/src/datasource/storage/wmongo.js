@@ -17,16 +17,21 @@ class CollectionError extends Error {
 }
 
 class WMongo extends GenericDB {
-  constructor(...args) {
-    super();
+  constructor(configDB) {
+    super();    
     this.mongoClient = mongoose;
     //please remember use secret for this. or config file encrypt
-    this.url = String(args[0]);
-    this.dbname = String(args[1]);
-    this.secure = Number(args[2]);
-    this.models = args[3];
-    this.logger = args[4];
+    this.url = String(configDB.type.url);
+    this.dbname = String(configDB.type.dbname);
+    this.secure = Number(configDB.type.secure);
+    this.models = configDB.type.schema;
+    this.logger = configDB.type.logger;
+    this.objectId = undefined;
     this.init();
+  }
+
+  setIdQuery(name){
+    this.objectId = name;
   }
 
   init() {
@@ -111,52 +116,115 @@ class WMongo extends GenericDB {
   };
 
   getId = async (id) => {
-    return await this.model.findOne({ _id: id });
+    const item = await this.model.findOne({ _id: id });
+    if (item){
+      let newItem = item;
+      newItem[this.objectId] = id;
+      return newItem;
+    }
+    return false;
   };
 
   deleteById = async (id) => {
-    return await this.model.deleteOne({
-      _id: id,
-    });
+    try {
+      const item = await this.getId(id);
+      if (item){
+        const deleteItem = await this.model.deleteOne({
+          _id: id,
+        });
+
+        if (deleteItem){
+          let newItem = item;
+          newItem[this.objectId]=item._id;
+          return newItem;
+        }
+      }
+      return false;
+    } catch (error) {
+      this.logger.error(`Error no fue posible eliminar objeto: ${error}`);
+      return false;
+    }
   };
 
   delete = async (item) => {
-    return await this.model.deleteOne({
-      _id: item._id,
-    });
+
+    try {
+      const deleteItem = await this.model.deleteOne({
+        _id: item._id,
+      });
+  
+      if (deleteItem){
+        let newItem = item;
+        newItem[this.objectId] = item._id;
+        return newItem
+      }  
+      return false;
+    } catch (error) {
+      this.logger.error(`Error no fue posible eliminar objeto: ${error}`);
+      return false;
+    }
+  
   };
 
   find = async (custom) => {
     const query = {};
-
-    query[custom.query.key] = custom.query.value;
-
-    return await this.model.find(query);
+    try {
+      query[custom.query.key] = custom.query.value;
+      
+      const resultado = await this.model.find(query);
+      if (resultado.length>0){
+        let newItem = resultado[0];
+        newItem[this.objectId] = resultado[0]._id;
+        return newItem;
+      }
+      return false;
+    } catch (error) {
+      this.logger.error(`Exception al buscar custom ${error.message}`);
+      return false;
+    }
   };
 
   includeById = async (item) => {
-    return await this.model.find({
+    const includeItem =  await this.model.find({
       _id: item._id,
     });
+    if (includeItem){
+      let newItem = item;
+      newItem[this.objectId] = item._id;
+      return newItem;
+    }
+    return false;
   };
 
   updateById = async (idx, item) => {
     const result = await this.model.updateOne({ _id: idx }, item);
 
     if (result.ok === 1 && result.nModified === 1) {
-      return result;
+      let newItem = item;
+      newItem[this.objectId] = idx;
+      
+      return newItem;
     }
-    return null;
+    return false;
   };
+
+  convertJson(obj){
+    let nuevoSTR = JSON.stringify(obj);
+    let nuevoOBJ = JSON.parse(nuevoSTR);
+    nuevoOBJ[this.objectId] = obj._id;
+    return obj;
+  }
 
   save = async (p) => {
     const item = new this.model(p);
-    return await item.save(p);
+    let newItem = await item.save(p);
+    return this.convertJson(newItem);
   };
 
   loadConfiguration = async (...args) => {
     this.setTable(args[0]);
     try {
+      this.setIdQuery('id');
       const nameModule = require('../../model/' + this.models[`${args[0]}`]);
       this.setModel(await this.generateModel(args[0], nameModule));
     } catch (error) {

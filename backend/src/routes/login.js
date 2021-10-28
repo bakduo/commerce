@@ -4,7 +4,7 @@ const express = require('express');
 
 const passport = require('passport');
 const WPassport = require('../middleware/wpassport');
-const LoginController = require('../api/login');
+const LoginController = require('../controller/login');
 const routerLogin = express.Router();
 const UserDAO = require('../dao/user-dao');
 const CredentialDAO = require('../dao/credential-dao');
@@ -24,5 +24,6 @@ routerLogin.post('/login', checkJWT, controller.login);
 routerLogin.post('/signup', controller.signup);
 routerLogin.post('/logout', controller.logout);
 routerLogin.delete('/delete', controller.delete);
+routerLogin.get('/list', controller.list);
 
 module.exports = routerLogin;

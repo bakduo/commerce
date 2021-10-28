@@ -25,7 +25,10 @@ class WPassport {
   }
 
   isValidPassword = async (user, password) => {
-    const credential = await this.credential.findOne({ _id: user._id });
+    //const credential = await this.credential.findOne({ _id: user._id });
+    const credential = await this.credential.find({query:{key:'id',value:user.id}});
+    logger.debug("#####Credential#######")
+    logger.debug(credential);
     return bcrypt.compareSync(password, credential.password);
   };
 
@@ -33,28 +36,15 @@ class WPassport {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(11), null);
   };
 
-  // checkLogin = async (req, email, password, done) => {
-  //   let userModel = this.repo.getModel();
-
-  //   let user = await userModel.findOne({ email: email });
-
-  //   if (!user) {
-  //     return done(null, false, console.log('mensaje', 'usuario no encontrado'));
-  //   } else {
-  //     if (!this.isValidPassword(user, password)) {
-  //       return done(null, false, console.log('mensaje', 'contraseña invalida'));
-  //     } else {
-  //       return done(null, user);
-  //     }
-  //   }
-  // };
-
   checkJWT = async (jwt_payload, done) => {
     try {
-      let user = this.repo.getModel();
-      let usuario = await user.findOne({ email: jwt_payload.email });
+      //let user = this.repo.getModel();
+      //let usuario = await user.findOne({ email: jwt_payload.email });
+      logger.debug("###########CHECK JWT###########");
+      let usuario = await this.repo.find({query:{email:jwt_payload.email}});
+      logger.debug(usuario);
       if (!usuario) {
-        logger.info('mensaje', 'usuario no encontrado');
+        logger.debug('mensaje', 'usuario no encontrado');
         return done(null, false);
       } else {
         return done(null, usuario);
@@ -103,17 +93,6 @@ class WPassport {
           break;
       }
     });
-
-    //Always local
-    // passport.use(
-    //   'login',
-    //   new LocalStrategy(
-    //     {
-    //       passReqToCallback: true,
-    //     },
-    //     this.checkLogin
-    //   )
-    // );
 
     passport.use(
       'jwt',

@@ -1,6 +1,6 @@
 const express = require('express');
 
-const CarritoController = require('../api/carrito');
+const CarritoController = require('../controller/carrito');
 const passport = require('passport');
 const WPassport = require('../middleware/wpassport');
 const UserDAO = require('../dao/user-dao');
@@ -41,7 +41,6 @@ routerCarrito.get(
   controller.getProducto
 );
 
-// Same as loopback middleware
 routerCarrito.post(
   '/agregar/:id',
   passport.authenticate('jwt', { session: false }),

@@ -9,8 +9,7 @@ const repo2 = new CredentialDAO(config.db);
 const repo3 = new TokenDAO(config.db);
 
 isValidPassword = async (user, password) => {
-  const userCredential = repo2.getModel();
-  const credential = await userCredential.findOne({ user: user });
+  const credential = await repo2.find({query:{key:'user',value:user}})
   return bcrypt.compareSync(password, credential.password);
 };
 
@@ -18,18 +17,14 @@ exports.checkJWT = async (req, res, next) => {
   try {
     if (req.body.email) {
       const { email, password } = req.body;
-
-      let user = repo.getModel();
-
-      let usuario = await user.findOne({ email: email });
-
+      let usuario = await repo.find({query:{key:'email',value:email}});
       if (!usuario) {
-        return res.json({ SUCCESS: null, fail: 'usuario no encontrado' });
+        return res.json({ SUCCESS: false, fail: 'usuario no encontrado' });
       } else {
         const valid = await isValidPassword(usuario, password);
         if (!valid) {
-          return res.json({
-            SUCCESS: null,
+          return res.status(401).json({
+            SUCCESS: false,
             fail: 'usuario o password invalida',
           });
         } else {
@@ -45,12 +40,14 @@ exports.checkJWT = async (req, res, next) => {
             }
           );
 
-          let tokens = repo3.getModel();
+          //let tokens = repo3.getModel();
 
-          const tokenAlready = await tokens.findOne({ email: email });
+          //const tokenAlready = await tokens.findOne({ email: email });
+
+          let tokenAlready = repo3.find({query:{key:'email',value:email}});
 
           if (tokenAlready) {
-            await repo3.updateById(tokenAlready._id, {
+            await repo3.updateById(tokenAlready._id || tokenAlready.id , {
               token: token,
               email: email,
             });
@@ -68,7 +65,7 @@ exports.checkJWT = async (req, res, next) => {
       }
     }
   } catch (e) {
-    console.log(e);
+    
     throw new Error('Error al realizar login de usuario');
   }
 };

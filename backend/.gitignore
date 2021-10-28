@@ -7,3 +7,5 @@ export.sh
 *.env
 config/*.json
 log/*
+mochawesome-report/
+__test__/fixtures/

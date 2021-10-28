@@ -6,6 +6,12 @@ const oneMinute = 1000 * 60;
 const childProcess = require('child_process');
 const stream = require('stream');
 
+//Soporte tmb para dotenv
+const dotenv = require('dotenv');
+const path = require('path');
+dotenv.config({
+  path: path.resolve('./', process.env.NODE_ENV + '.env'),
+});
 //Logger
 //const supportPassport = process.env.SUPPORT_LOGIN.split(',');
 
@@ -25,7 +31,7 @@ const logger = require('pino')(
     //customLevels: levels,
     // use only the custom levels
     //useOnlyCustomLevels: true,
-    level: 'error',
+    customLevels: ['error','info','debug']
   },
   logThrough
 );
@@ -40,6 +46,8 @@ const child = childProcess.spawn(
     `${logPath}/log.error.log`,
     'info',
     `${logPath}/log.info.log`,
+    'debug',
+    `${logPath}/log.debug.log`,
   ],
   { cwd, env }
 );
@@ -54,6 +62,8 @@ const config = {
     port: app.port || 3000,
     dbtype: app.db1.type,
     dbtypesession: app.db2.type,
+    site: app.site,
+    protocol:app.protocol,
     cors: {
       server: [
         {
@@ -61,11 +71,14 @@ const config = {
           credentials: true,
         },
       ],
-    },
+    }
   },
+  default:app.defaultpersistence || false,
+  persistence:app.persistence,
   db: {},
   dbsession: {},
-  session: {},
+  session:{},
+  rebuild:{},
   logger: logger,
   timesession: oneMinute * 10,
   emails: app.emails_providers,
@@ -82,14 +95,14 @@ if (process.argv.length >= 3) {
   config.mode = 'FORK';
 }
 
-config.db = new DBCustom({
-  dbtype: config.server.dbtype,
-  url: `${app.db1.connector}://${app.db1.user}:${app.db1.passwd}@${app.db1.host}:${app.db1.port}/${app.db1.dbname}`,
-  dbname: `${app.db1.dbname}`,
-  secure: `${app.db1.secure}`,
-  schema: app.db1.schema,
-  logger: config.logger,
-});
+// config.db = new DBCustom({
+//   dbtype: config.server.dbtype,
+//   url: `${app.db1.connector}://${app.db1.user}:${app.db1.passwd}@${app.db1.host}:${app.db1.port}/${app.db1.dbname}`,
+//   dbname: `${app.db1.dbname}`,
+//   secure: `${app.db1.secure}`,
+//   schema: app.db1.schema,
+//   logger: config.logger,
+// });
 
 config.session = new SessionCustom({
   dbtype: config.server.dbtypesession,
@@ -99,5 +112,42 @@ config.session = new SessionCustom({
   secure: `${app.db2.secure}`,
   logger: config.logger,
 });
+
+if (config.default){
+  config.server.dbtype = config.default;
+}
+
+config.rebuild = () =>{
+  //Segun que persistencia eligo se genera un store DB para utilizar
+  switch (config.server.dbtype) {
+    case "mongo":
+      config.db = new DBCustom({
+        dbtype: config.server.dbtype,
+        persistence:config.persistence,
+        url: `${app.db1.connector}://${app.db1.user}:${app.db1.passwd}@${app.db1.host}:${app.db1.port}/${app.db1.dbname}`,
+        dbname: `${app.db1.dbname}`,
+        secure: `${app.db1.secure}`,
+        schema: app.db1.schema,
+        logger: config.logger,
+      })
+      break;
+    case "sqlite":
+      config.db = new DBCustom({
+        dbtype: config.server.dbtype,
+        persistence:config.persistence,
+        logger: config.logger,
+      })
+      break;
+    case "memory":
+      config.db = new DBCustom({
+        dbtype: config.server.dbtype,
+        persistence:config.persistence,
+        logger: config.logger,
+      })
+    break;
+  }
+}
+
+config.rebuild();
 
 module.exports = config;

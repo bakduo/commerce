@@ -78,16 +78,16 @@ app.use((req, res, next) => {
 });
 
 // eslint-disable-next-line no-unused-vars
-app.use((err, req, res, next) => {
-  const { statusCode = 500, message } = err;
+// app.use((err, req, res, next) => {
+//   const { statusCode = 500, message } = err;
 
-  //const log = `${logger.header(req)} ${statusCode} ${message}`;
-  logger.error(log);
-  res.status(statusCode);
-  res.json({
-    message,
-  });
-});
+//   const log = `${logger.header(req)} ${statusCode} ${message}`;
+//   logger.error(log);
+//   res.status(statusCode);
+//   res.json({
+//     message,
+//   });
+// });
 
 //initialize passport
 app.use(passport.initialize());

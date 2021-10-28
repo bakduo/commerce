@@ -28,7 +28,7 @@ class GenericDAO {
       return item;
     }
 
-    return null;
+    return false;
   };
 
   getItems = async () => {
@@ -38,7 +38,7 @@ class GenericDAO {
       return items;
     }
 
-    return null;
+    return false;
   };
 
   getIndex = async (id) => {
@@ -60,7 +60,7 @@ class GenericDAO {
       return await this.items.find(custom);
     } catch (error) {
       GenericDAO.handleError(error);
-      return null;
+      return false;
     }
   };
 
@@ -70,10 +70,10 @@ class GenericDAO {
       if (itemeliminado !== null) {
         return itemeliminado;
       }
-      return null;
+      return false;
     } catch (error) {
       GenericDAO.handleError(error);
-      return null;
+      return false;
     }
   };
 
@@ -83,10 +83,10 @@ class GenericDAO {
       if (item !== null) {
         return item;
       }
-      return null;
+      return false;
     } catch (error) {
       GenericDAO.handleError(error);
-      return null;
+      return false;
     }
   };
 
@@ -96,10 +96,10 @@ class GenericDAO {
       if (p) {
         return p;
       }
-      return null;
+      return false;
     } catch (error) {
       GenericDAO.handleError(error);
-      return null;
+      return false;
     }
   };
 
@@ -109,10 +109,10 @@ class GenericDAO {
       if (result) {
         return result;
       }
-      return null;
+      return false;
     } catch (error) {
       GenericDAO.handleError(error);
-      return null;
+      return false;
     }
   };
 }

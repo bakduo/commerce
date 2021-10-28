@@ -3,7 +3,7 @@ const { createLogger, format, transports } = require('winston');
 const morgan = require('morgan');
 
 //setup logger
-const logger = createLogger({
+const loggerhttp = createLogger({
   format: format.simple(),
   transports: [new transports.Console()],
 });
@@ -18,19 +18,19 @@ const requests = morgan(requestFormat, {
     write: (message) => {
       //rremove all lines breaks
       const log = message;
-      return logger.info(log);
+      return loggerhttp.info(log);
     },
   },
 });
 
 //attach to logger object
-logger.requests = requests;
+loggerhttp.requests = requests;
 
 //format logger and attach logger object
 
-logger.header = (req) => {
+loggerhttp.header = (req) => {
   const date = new Date().toISOString();
   return `${req.ip} [${date}] ${req.id}  "${req.method} ${req.originalUrl}`;
 };
 
-module.exports = logger;
+module.exports = loggerhttp;

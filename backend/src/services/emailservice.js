@@ -41,7 +41,7 @@ class EmailService {
     }
 
     //destructuration
-    geneateMessage(subject,to,data){
+    generateMessage(subject,to,data){
         const buildDataEmail = {
             from:this.getFrom(),
             to:to,
@@ -53,8 +53,9 @@ class EmailService {
 
     send(subject,to,data){
         try {
-            this.smtp.sendMail(this.geneateMessage(subject,to,data), (err, info) => {
+            this.smtp.sendMail(this.generateMessage(subject,to,data), (err, info) => {
                 if (err) {
+                    
                     logger.error(err);
                     return err
                 }
