@@ -2,15 +2,13 @@ const config = require('../src/config/index');
 config.server.dbtype = "mongo";
 config.rebuild();
 const app = require('../src/app');
-const request = require('supertest')(app);
 const { expect } = require('chai');
 const ProductoDAO = require('../src/dao/producto-dao');
 const repo = new ProductoDAO(config.db);
 const testRecords = require('./fixtures/loaderfake');
 let productosFake = [];
-let idFake = '';
 
-describe('Test productos UNIT',() => {
+describe('Test Producto DAO UNIT',() => {
     
   before(async function(){
       console.log("###############BEGIN TEST#################");
@@ -23,14 +21,6 @@ describe('Test productos UNIT',() => {
       console.log("###############CLEAR DB TEST#################");
       repo.deleteAll();
   })
-
-  //Clean datastore
-  afterEach(async () => {
-      const clear = async () =>{
-          repo.deleteAll();
-      }
-      await clear();
-  });
 
   describe('Add un producto', () => {
     it('debería agregar un productos', async () => {

@@ -25,9 +25,7 @@ export class TokenService {
   //const isExpired = helper.isTokenExpired(myRawToken);
 
   getToken(){
-
     return this.helper.decodeToken<TokenUser>(this.token);
-
   }
 
   getTokenRaw(){

@@ -23,7 +23,7 @@ class CarritoDTO {
       this.#title = title;
       this.#description = description;
       this.#stock = stock;
-      this.#carrito_session = carrito_session;
+      this.#carrito_session =carrito_session;
   }
 
   setTimeStamp(t){

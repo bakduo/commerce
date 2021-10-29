@@ -58,22 +58,35 @@ class UserApi {
       const exists = await this.repo.find({query:{key:'email',value:email}})
 
       if (!exists){
-        if (!phoneUtil.isValidNumber(phoneUtil.parse(tel, pais), pais)) {
+        try {
+          if (!phoneUtil.isValidNumber(phoneUtil.parse(tel, pais), pais)) {
+            return {
+              SUCCESS: false,
+              fail: 'El telefono no es valido',
+            };
+          }  
+        } catch (error) {
           return {
             SUCCESS: false,
             fail: 'El telefono no es valido',
           };
         }
-
-        let avatarValid = await isImageURL(avatar);
         
-        if (!avatarValid) {
+        try {
+          let avatarValid = await isImageURL(avatar); 
+          if (!avatarValid) {
+            return {
+              SUCCESS: false,
+              fail: 'La imagen de usuario no es valida',
+            };
+          }
+        } catch (error) {
           return {
             SUCCESS: false,
             fail: 'La imagen de usuario no es valida',
           };
         }
-
+        
         const download = new DownloadImage();
         
         download.downloadImage(avatar, nombre);

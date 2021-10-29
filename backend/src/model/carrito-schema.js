@@ -40,7 +40,7 @@ const CarritoSchema = new Schema(
       default: '',
     },
     code: {
-      type: Number,
+      type: String,
       required: true,
       default: '',
     },

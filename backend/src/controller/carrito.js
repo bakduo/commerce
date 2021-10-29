@@ -39,12 +39,18 @@ class CarritoController {
       //let productos = await this.repo.getItems();
       let productos = await this.api.getAll();
       
-      productos = productos.filter((item) => item.carrito_session == user.id);
+      productos = productos.filter((item) => item.getCarritoSession() == user.id);
 
       if (productos === null){
         return res.status(400).json({ status: 'No hay productos cargados' });
       }
+
+      if (productos.length>0){
+        productos = productos.map((item)=>{return item.toJson()});
+      }
+      
       return res.status(200).json(productos);
+
     } catch (error) {
       return res.status(500).json({ status: `${error}` });
     }
@@ -107,6 +113,7 @@ class CarritoController {
         //   }
         // );
 
+        
         if (producto) {
           const record = {
             timestamp: Math.floor(Date.now() / 1000),
@@ -122,7 +129,7 @@ class CarritoController {
 
           const ok = await this.api.add(record);
           if (ok){
-            return res.status(201).json(producto.toJson());
+            return res.status(201).json(ok.toJson());
           }else{
             return res.status(500).json({ status: 'Falla producto no se puedo guardar.' });      
           }
@@ -154,7 +161,7 @@ class CarritoController {
         if (carrito) {
           const eliminado = await this.api.deleteOne(req.params.id);
           if (eliminado) {
-            return res.status(200).json(eliminado);
+            return res.status(200).json(eliminado.toJson());
           }else{
             return res.status(500).json({ status: 'No se ha podido eliminar el producto del carrito.' });
           }
@@ -191,7 +198,7 @@ class CarritoController {
 
         let productos = await this.api.getAll();
         productos = productos.filter(
-          (item) => item.carrito_session == user.id
+          (item) => item.getCarritoSession() == user.id
         );
 
         if (productos.length <= 1) {
@@ -203,7 +210,7 @@ class CarritoController {
 
         let productosText = '';
         productos.forEach((item) => {
-          productosText = productosText + '<li>' + item.name + '</li>';
+          productosText = productosText + '<li>' + item.getName() + '</li>';
         });
         const fechaLogin = new Date().toISOString();
         this.service.initialize(providerEmail1);

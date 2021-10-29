@@ -127,5 +127,5 @@ export interface Carrito {
   name:string;
   description:string;
   stock:number;
-  code:number;
+  code:string;
 }

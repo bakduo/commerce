@@ -93,6 +93,7 @@ class LoginController {
       req.logout();
     }
     res.clearCookie('user');
+    
     //req.session.destroy();
     const fechaLogin = new Date().toISOString();
     this.service.initialize(providerEmail1);

@@ -25,6 +25,20 @@ class ProductoDAO extends GenericDAO {
     return this.name;
   }
 
+
+  getItems = async () => {
+
+    let nuevos = [];
+
+    let temporal = await this.items.getItems();
+
+    temporal.forEach((item) => {
+      nuevos.push(new ProductoDTO(item))
+    });
+
+    return nuevos;
+  }
+
   save = async (obj) =>{
     //pre or post
     const item = await this.items.save(obj);

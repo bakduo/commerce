@@ -1,4 +1,4 @@
-import { TokenService } from './../services/token.service';
+import { TokenService, TokenUser } from './../services/token.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
@@ -6,6 +6,7 @@ import { Carrito, CarritoService } from '../services/carrito.service';
 import { ControlauthService } from '../services/controlauth.service';
 import { ProductoService } from '../services/producto.service';
 import { Router } from '@angular/router';
+import { LoginService } from '../services/login.service';
 
 @Component({
   selector: 'app-navbar',
@@ -22,7 +23,8 @@ export class NavbarComponent implements OnInit,OnDestroy {
 
   filterList: any = ['name', 'code', 'stock','price']
 
-  constructor(private _tokenService:TokenService,private fb: FormBuilder,private _controlService:ControlauthService,private _carritoService:CarritoService,private _productoService:ProductoService,private router:Router) {
+  constructor(private _loginService: LoginService,
+    private _tokenService:TokenService,private fb: FormBuilder,private _controlService:ControlauthService,private _carritoService:CarritoService,private _productoService:ProductoService,private router:Router) {
 
     this.productosCarrito$ = this._carritoService.getProductos$();
 
@@ -34,7 +36,6 @@ export class NavbarComponent implements OnInit,OnDestroy {
       valuefilter: ['', [ Validators.required ]  ]
 
     });
-
 
   }
 
@@ -49,7 +50,6 @@ export class NavbarComponent implements OnInit,OnDestroy {
       error => {
         console.log(error);
       });
-
   }
 
   getAuth(){
@@ -69,8 +69,15 @@ export class NavbarComponent implements OnInit,OnDestroy {
 
 
   logout(){
-    this._tokenService.clearToken();
-    this.router.navigate( ['/'] );
+    this._loginService.logout().subscribe((response:any)=>{
+      if (response.SUCCESS){
+        this._tokenService.clearToken();
+        this.router.navigate( ['/'] );
+      }else{
+        alert("No fue posible realizar logout de forma efectiva. Intente mas tarde");
+      }
+    })
+    
   }
 
   changerole():void{

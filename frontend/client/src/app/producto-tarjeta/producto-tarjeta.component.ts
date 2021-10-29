@@ -21,7 +21,7 @@ export class ProductoTarjetaComponent implements OnInit {
 
   constructor(private _tokenService:TokenService,private _carritoService:CarritoService,private router:Router,private _productoService:ProductoService) {
     this.productoSeleccionado = new EventEmitter();
-    this.index = -1;
+    this.index = '';
     //this.role = _controlService.getRole();
   }
 

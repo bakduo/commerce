@@ -64,7 +64,7 @@ export class ProductoService {
       delay(0));
   }
 
-  getProducto(id:number){
+  getProducto(id:any){
     return this.http.get(`${ this.url }/listar/${id}`);
   }
 
@@ -107,5 +107,5 @@ export interface Producto{
   name:string;
   description:string;
   stock:number;
-  code:number;
+  code:string;
 }

@@ -32,10 +32,11 @@ export class SignupComponent implements OnInit {
   signup(){
     if ( this.formSingup.valid ) {
 
+        console.log("debe enviar");
         this._loginService.signup(this.formSingup.value).subscribe(
           (response)=>{
             const respuesta:any = response;
-            if (respuesta.fail){
+            if (respuesta.fail){ 
                 alert(respuesta.fail);
             }else{
               if (respuesta.SUCCESS){

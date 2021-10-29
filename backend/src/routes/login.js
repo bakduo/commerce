@@ -21,9 +21,15 @@ wpassport.init();
 const controller = new LoginController(repo, repo2);
 
 routerLogin.post('/login', checkJWT, controller.login);
+
 routerLogin.post('/signup', controller.signup);
-routerLogin.post('/logout', controller.logout);
+
+routerLogin.post('/logout', [
+  passport.authenticate('jwt', { session: false })
+],controller.logout);
+
 routerLogin.delete('/delete', controller.delete);
+
 routerLogin.get('/list', controller.list);
 
 module.exports = routerLogin;

@@ -20,7 +20,7 @@ const testUserRecords = require('./fixtures/loaderuserfake');
 
 let productosFake = [];
 let token = '';
-let carritosCargados =  [];
+let carritosCargados;
 
 
 
@@ -28,12 +28,6 @@ describe('Test Carrito UNIT',() => {
     
     before(async function(){
         console.log("###############BEGIN TEST#################");
-        repoCarrito.deleteAll();
-        repo.deleteAll();
-        repoUser.deleteAll();
-        repoCredential.deleteAll();
-
-        productosFake = testRecords.load();
         user = testUserRecords.getOneUser();
         let responseUser = await request.post('/api/signup').send(user);
         expect(responseUser.status).to.eql(200);
@@ -47,34 +41,26 @@ describe('Test Carrito UNIT',() => {
         expect(responseUserData).to.be.a('object');
         expect(responseUserData).to.include.keys('SUCCESS','fail','token');
         token = responseUserData.token;
+        productosFake = testRecords.load();
     })
 
     after(async () => {
 
         console.log("###############CLEAR DB TEST#################");
+        await repoUser.deleteAll();
+        await repoCredential.deleteAll();
+        await repoCarrito.deleteAll();
+        await repo.deleteAll();
     })
 
     //Load datastore
     beforeEach(async () => {
-        const load = async () => {
-            productosFake.forEach(async (item)=>{
-                await repo.save(item);
-            })
-        }
-        await load();
+        
     });
 
     //Clean datastore
     afterEach(async () => {
-        const clear = async () =>{
-            productosFake.forEach(async (item)=>{
-                const p = await repo.find({query: {'key':'name','value':item.name}});
-                if (p){
-                    const borrado = await repo.deleteById(p.id);
-                }
-            })
-        }
-        await clear();   
+       
     });
  
     describe('GET Carrito', () => {
@@ -83,79 +69,71 @@ describe('Test Carrito UNIT',() => {
             expect(response.status).to.eql(200);
             const productos = response.body;
             expect(productos).to.be.a('array');
-            
         });
     })
 
     describe('POST producto al carrito I', () => {
         it('debería incorporar un producto', async () => {
-            
-            const p = await repo.find({query: {'key':'code','value':productosFake[0].code}});
-            let response = await request.post(`/api/carrito/agregar/${p.id}`).set('Authorization',`bearer ${token}`).send()
+            const p = await repo.save(productosFake[0]);
+            let response = await request.post(`/api/carrito/agregar/${p.getId()}`).set('Authorization',`bearer ${token}`).send();
             expect(response.status).to.eql(201);
             const productoSave = response.body;
             expect(productoSave).to.include.keys('price','name','thumbail','code','description','title','stock');
-            expect(productoSave.description).to.eql(p.description)
-            expect(productoSave.code).to.eql(p.code)
-            expect(productoSave.stock).to.eql(p.stock)
-            expect(productoSave.title).to.eql(p.title)
-            expect(productoSave.price).to.eql(p.price)
-            expect(productoSave.thumbail).to.eql(p.thumbail)
-            expect(productoSave.name).to.eql(p.name);
+            expect(productoSave.description).to.eql(p.getDescription())
+            expect(productoSave.code).to.eql(p.getCode())
+            expect(productoSave.stock).to.eql(p.getStock())
+            expect(productoSave.title).to.eql(p.getTitle())
+            expect(productoSave.price).to.eql(p.getPrice())
+            expect(productoSave.thumbail).to.eql(p.getThumbail())
+            expect(productoSave.name).to.eql(p.getName());
         })
     })
 
     describe('POST producto al carrito II', () => {
       it('debería incorporar un producto', async () => {
-          
-          const p = await repo.find({query: {'key':'code','value':productosFake[1].code}});
-          let response = await request.post(`/api/carrito/agregar/${p.id}`).set('Authorization',`bearer ${token}`).send()
+          const p = await repo.save(productosFake[1]);
+          let response = await request.post(`/api/carrito/agregar/${p.getId()}`).set('Authorization',`bearer ${token}`).send();
           expect(response.status).to.eql(201);
           const productoSave = response.body;
           expect(productoSave).to.include.keys('price','name','thumbail','code','description','title','stock');
-          expect(productoSave.description).to.eql(p.description)
-          expect(productoSave.code).to.eql(p.code)
-          expect(productoSave.stock).to.eql(p.stock)
-          expect(productoSave.title).to.eql(p.title)
-          expect(productoSave.price).to.eql(p.price)
-          expect(productoSave.thumbail).to.eql(p.thumbail)
-          expect(productoSave.name).to.eql(p.name);
+          expect(productoSave.code).to.eql(p.getCode())
+          expect(productoSave.stock).to.eql(p.getStock())
+          expect(productoSave.title).to.eql(p.getTitle())
+          expect(productoSave.price).to.eql(p.getPrice())
+          expect(productoSave.thumbail).to.eql(p.getThumbail())
+          expect(productoSave.name).to.eql(p.getName());
       })
   })
 
   describe('POST producto al carrito III', () => {
-    it('debería incorporar un producto', async () => {
-        
-        const p = await repo.find({query: {'key':'code','value':productosFake[2].code}});
-        let response = await request.post(`/api/carrito/agregar/${p.id}`).set('Authorization',`bearer ${token}`).send()
+    it('debería incorporar un producto', async () => {        
+        const p = await repo.save(productosFake[2]);
+        let response = await request.post(`/api/carrito/agregar/${p.getId()}`).set('Authorization',`bearer ${token}`).send();
         expect(response.status).to.eql(201);
         const productoSave = response.body;
         expect(productoSave).to.include.keys('price','name','thumbail','code','description','title','stock');
-        expect(productoSave.description).to.eql(p.description)
-        expect(productoSave.code).to.eql(p.code)
-        expect(productoSave.stock).to.eql(p.stock)
-        expect(productoSave.title).to.eql(p.title)
-        expect(productoSave.price).to.eql(p.price)
-        expect(productoSave.thumbail).to.eql(p.thumbail)
-        expect(productoSave.name).to.eql(p.name);
+        expect(productoSave.code).to.eql(p.getCode())
+        expect(productoSave.stock).to.eql(p.getStock())
+        expect(productoSave.title).to.eql(p.getTitle())
+        expect(productoSave.price).to.eql(p.getPrice())
+        expect(productoSave.thumbail).to.eql(p.getThumbail())
+        expect(productoSave.name).to.eql(p.getName());
     })
   })
 
-
   describe('POST producto al carrito IV', () => {
     it('debería incorporar un producto', async () => {    
-        const p = await repo.find({query: {'key':'code','value':productosFake[3].code}});
-        let response = await request.post(`/api/carrito/agregar/${p.id}`).set('Authorization',`bearer ${token}`).send()
+        const p = await repo.save(productosFake[3]);
+        let response = await request.post(`/api/carrito/agregar/${p.getId()}`).set('Authorization',`bearer ${token}`).send();
         expect(response.status).to.eql(201);
         const productoSave = response.body;
         expect(productoSave).to.include.keys('price','name','thumbail','code','description','title','stock');
-        expect(productoSave.description).to.eql(p.description)
-        expect(productoSave.code).to.eql(p.code)
-        expect(productoSave.stock).to.eql(p.stock)
-        expect(productoSave.title).to.eql(p.title)
-        expect(productoSave.price).to.eql(p.price)
-        expect(productoSave.thumbail).to.eql(p.thumbail)
-        expect(productoSave.name).to.eql(p.name);
+        expect(productoSave.code).to.eql(p.getCode())
+        expect(productoSave.stock).to.eql(p.getStock())
+        expect(productoSave.title).to.eql(p.getTitle())
+        expect(productoSave.price).to.eql(p.getPrice())
+        expect(productoSave.thumbail).to.eql(p.getThumbail())
+        expect(productoSave.name).to.eql(p.getName());
     })
   })
 
@@ -166,14 +144,12 @@ describe('Test Carrito UNIT',() => {
         const productos = response.body;
         expect(productos).to.be.a('array');
         expect(productos).length.greaterThanOrEqual(4);
-        carritosCargados = productos;
-        
+        carritosCargados = productos;        
     });
   })
 
     describe('POST producto con error', () => {
-        it('No debería incorporar un producto', async () => { 
-                  
+        it('No debería incorporar un producto', async () => {                   
           let response = await request.post('/api/carrito/agregar/dsfsdfdsfdsfdsfds').set('Authorization',`bearer ${token}`).send()
           const productoSave = response.body;
           expect(response.status).to.eql(404);
@@ -183,9 +159,9 @@ describe('Test Carrito UNIT',() => {
     });
 
     describe('GET un producto del carrito', () => {
-      it('debería retornar el producto del carrito', async () => {
-          
+      it('debería retornar el producto del carrito', async () => {          
           //carritosCargados[0].id
+          //console.log(carritosCargados);
           let response = await request.get(`/api/carrito/listar/${carritosCargados[0].id}`).set('Authorization',`bearer ${token}`);
           const productoSave = response.body;
           expect(response.status).to.eql(200);
@@ -264,6 +240,5 @@ describe('Test Carrito UNIT',() => {
         });
       })
   
-
 
 });

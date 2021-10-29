@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "rm -f db/*.json;cross-env NODE_ENV=production node src/server.js",
-    "test": "cross-env NODE_ENV='development' ./node_modules/.bin/mocha __test__/producto-dao.*.js --reporter mochawesome --exit",
+    "test": "cross-env NODE_ENV='development' ./node_modules/.bin/mocha __test__/*.*.js --reporter mochawesome --timeout 15000 --exit",
     "dev": "cross-env NODE_ENV='development' node_modules/.bin/nodemon --inspect bin/run.js",
     "sqlite": "cross-env NODE_ENV='sqlite' node_modules/.bin/nodemon --inspect src/server.js",
     "mysql": "cross-env NODE_ENV='mysql' node_modules/.bin/nodemon --inspect src/server.js",

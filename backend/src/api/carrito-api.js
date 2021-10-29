@@ -21,6 +21,7 @@ class CarritosApi {
     add = async (producto) =>{
       
         const valid = this.model.validate(producto);
+        
         if (valid){
             return await this.repo.save(producto);
         }
@@ -78,7 +79,8 @@ class CarritosApi {
     }
 
     getAll = async () => {
-        const listaProductos = await this.repo.getItems();      
+        const listaProductos = await this.repo.getItems(); 
+        
         if (listaProductos) {
             return listaProductos;
         }

@@ -1,10 +1,12 @@
 const config = require('../src/config/index');
-config.server.dbtype = "memory";
+config.server.dbtype = "mongo";
 config.rebuild();
 const app = require('../src/app');
 const request = require('supertest')(app);
 const { expect } = require('chai');
 const testRecords = require('./fixtures/loaderuserfake');
+const UserDAO = require('../src/dao/user-dao');
+const repoUser = new UserDAO(config.db);
 
 let user;
 
@@ -16,6 +18,7 @@ describe('Test Login UNIT',() => {
     })
 
     after(async () => {
+        await repoUser.deleteAll();
         console.log("###############CLEAR DB TEST#################");
     })
 
@@ -73,6 +76,20 @@ describe('Test Login UNIT',() => {
           expect(responseUser).to.include.keys('SUCCESS','fail');
           expect(responseUser.SUCCESS).to.eql(false);
           expect(responseUser.fail).to.eql('usuario o password invalida');
+      });
+    });
+
+
+    describe('Logout user', () => {
+      it('Realizar logout', async () => {    
+          
+          let response = await request.post('/api/logout').send();
+          expect(response.status).to.eql(200);
+          const responseUser = response.body;
+          expect(responseUser).to.be.a('object');
+          expect(responseUser).to.include.keys('SUCCESS','fail');
+          expect(responseUser.SUCCESS).to.eql(true);
+          expect(responseUser.fail).to.eql(false);
       });
     });
 

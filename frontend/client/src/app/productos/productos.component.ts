@@ -15,6 +15,7 @@ export class ProductosComponent implements OnInit {
 
   productos:Producto[] = [];
   role:boolean =false;
+  username: String = "";
 
   constructor(private _tokenService:TokenService,private _controlService:ControlauthService ,private _productoService:ProductoService,private router:Router) {
 
@@ -33,6 +34,7 @@ export class ProductosComponent implements OnInit {
         error => {
           console.log(error);
         });
+    this.username = this.getAuth().email;
   }
 
   getRole(){

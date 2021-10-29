@@ -32,7 +32,12 @@ class ProductoController {
         return res.status(400).json({ status: 'No hay productos cargados' });
       }
 
+      if (items.length>0){
+        items = items.map((item)=>{return item.toJson()});
+      }
+
       return res.status(200).json(items);
+      
     } catch (error) {
       return res.status(500).json({ error: `${error}` });
     }
@@ -67,6 +72,7 @@ class ProductoController {
         //  return item.code === Number(codigo);
         //});
           const exist = await this.api.findOne(req.body.code)
+          //console.log(exist);
           if (!exist) {
             const tmp1 = await this.api.add(req.body);
             if (tmp1) {
@@ -114,7 +120,7 @@ class ProductoController {
           if (existe) {
             const deleteProduct = await this.api.deleteOne(req.params.id);
             if (deleteProduct !== null) {
-              return res.status(200).json(deleteProduct);
+              return res.status(200).json(deleteProduct.toJson());
             }else{
               return res.status(500).json({status:'No es posible eliminar el producto.'});
             }

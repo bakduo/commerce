@@ -41,8 +41,7 @@ class WPassport {
       //let user = this.repo.getModel();
       //let usuario = await user.findOne({ email: jwt_payload.email });
       logger.debug("###########CHECK JWT###########");
-      let usuario = await this.repo.find({query:{email:jwt_payload.email}});
-      logger.debug(usuario);
+      let usuario = await this.repo.find({query:{key:'email',value:jwt_payload.email}});
       if (!usuario) {
         logger.debug('mensaje', 'usuario no encontrado');
         return done(null, false);

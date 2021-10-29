@@ -115,8 +115,22 @@ class WMongo extends GenericDB {
     return await this.model.find();
   };
 
+  isValidId(id){
+   
+    if (typeof id !== 'string') {
+      return false;
+    }
+    return id.match(/^[a-f\d]{24}$/i);
+
+    //f( !mongoose.Types.ObjectId.isValid(idx) ) return false;
+  }
+
   getId = async (id) => {
-    const item = await this.model.findOne({ _id: id });
+    
+    if (!this.isValidId(id)) return false;
+
+    const item = await this.model.findOne({ _id: id  });
+
     if (item){
       let newItem = item;
       newItem[this.objectId] = id;
@@ -127,6 +141,9 @@ class WMongo extends GenericDB {
 
   deleteById = async (id) => {
     try {
+
+      if (!this.isValidId(id)) return false;
+
       const item = await this.getId(id);
       if (item){
         const deleteItem = await this.model.deleteOne({
@@ -197,6 +214,9 @@ class WMongo extends GenericDB {
   };
 
   updateById = async (idx, item) => {
+
+    if (!this.isValidId(idx)) return false;
+
     const result = await this.model.updateOne({ _id: idx }, item);
 
     if (result.ok === 1 && result.nModified === 1) {
@@ -218,6 +238,7 @@ class WMongo extends GenericDB {
   save = async (p) => {
     const item = new this.model(p);
     let newItem = await item.save(p);
+    //newItem[this.objectId] = newItem._id;
     return this.convertJson(newItem);
   };
 

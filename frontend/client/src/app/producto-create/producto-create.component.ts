@@ -38,9 +38,9 @@ export class ProductoCreateComponent implements OnInit {
       .subscribe(
         (response) => {
           const respuesta:any = response;
-          if (respuesta.status===false){
+          if (respuesta.status){
             //FIX sweetAlert
-            alert("Los datos del formulario no están correctos: " + respuesta.type);
+            alert("Los datos del formulario no están correctos: " + respuesta.status);
           }else{
             this.router.navigate(["/productos"]);
           }

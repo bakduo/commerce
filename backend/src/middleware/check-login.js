@@ -24,7 +24,7 @@ exports.checkJWT = async (req, res, next) => {
         const valid = await isValidPassword(usuario, password);
         if (!valid) {
           return res.status(401).json({
-            SUCCESS: false,
+            SUCCESS: false,     
             fail: 'usuario o password invalida',
           });
         } else {
@@ -40,21 +40,17 @@ exports.checkJWT = async (req, res, next) => {
             }
           );
 
-          //let tokens = repo3.getModel();
-
-          //const tokenAlready = await tokens.findOne({ email: email });
-
-          let tokenAlready = repo3.find({query:{key:'email',value:email}});
+          let tokenAlready = await repo3.find({query:{key:'email',value:usuario.email}});
 
           if (tokenAlready) {
             await repo3.updateById(tokenAlready._id || tokenAlready.id , {
               token: token,
-              email: email,
+              email: usuario.email,
             });
           } else {
             await repo3.save({
               token: token,
-              email: email,
+              email: usuario.email,
             });
           }
 
