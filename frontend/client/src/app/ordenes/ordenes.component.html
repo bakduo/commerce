@@ -1,0 +1,22 @@
+<h1>Ordenes:</h1>
+<hr>
+
+
+<div class="card-columns">
+
+    <div class="card animated fadeIn fast" *ngFor="let item of ordenes; index as i">
+
+    <div class="card-body">
+      <h4 class="card-title">Estado: {{ item.estado }}</h4>
+      <p class="card-text">Generado el: {{ item.timestamp * 1000 | date:'dd-MM-yyyy' }} </p>
+      <p class="card-text">Cantidad de productos: <small class="text-muted">{{ item.productos.length }}</small></p>
+
+      <button (click)="verOrden(i)" type="button" class="btn btn-outline-primary btn-block"> Ver más... </button>
+    
+    </div>
+
+  </div>
+
+    
+
+</div>

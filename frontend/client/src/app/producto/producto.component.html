@@ -5,7 +5,7 @@
 
   <div class="col-md-4">
 
-    <img [src]="producto.thumbail" class="img-fluid" [alt]="producto.name">
+    <img [src]="urlBack + '/' + producto.thumbail" class="img-fluid" [alt]="producto.name">
     <br><br>
     <a [routerLink]="['/productos']" class="btn btn-outline-danger btn-block">Regresar</a>
 

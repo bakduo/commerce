@@ -108,7 +108,21 @@ class WMongo extends GenericDB {
   }
 
   deleteAll = async () => {
-    return this.model.collection.drop();
+    try {
+
+      const items = await this.getItems();
+      
+      if (items.length>0){
+        return this.model.collection.drop();
+      }
+      return false;
+
+    } catch (error) {
+      console.log(error);
+      this.logger.debug("Exception al realiar drop de collection");
+      throw new Error(`Error al realizar drop de collection ${error}`);
+    }
+    
   };
 
   getItems = async () => {
@@ -122,7 +136,6 @@ class WMongo extends GenericDB {
     }
     return id.match(/^[a-f\d]{24}$/i);
 
-    //f( !mongoose.Types.ObjectId.isValid(idx) ) return false;
   }
 
   getId = async (id) => {
@@ -136,6 +149,17 @@ class WMongo extends GenericDB {
       newItem[this.objectId] = id;
       return newItem;
     }
+    return false;
+  };
+  
+  getItemsOther = async (id,modelname) => {
+
+    const items = await this.model.findOne({_id:id}).populate(modelname);
+    
+    if (items){
+      return items;
+    }
+  
     return false;
   };
 
@@ -236,6 +260,7 @@ class WMongo extends GenericDB {
   }
 
   save = async (p) => {
+    
     const item = new this.model(p);
     let newItem = await item.save(p);
     //newItem[this.objectId] = newItem._id;

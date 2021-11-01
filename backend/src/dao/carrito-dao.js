@@ -1,7 +1,8 @@
-const CarritoDTO = require('../dto/carrito-dto');
 const GenericDAO = require('./generic-dao');
 const config = require('../config/index');
 const logger = config.logger;
+const CarritoDTO = require('../dto/carrito-dto');
+
 
 class CarritoDAO extends GenericDAO {
   static instancia;
@@ -37,24 +38,20 @@ class CarritoDAO extends GenericDAO {
     });
 
     return nuevos;
-    
-    //No funciona
-    // list.map((item,index,array)=>{
-    //     return new CarritoDTO(item);
-    // });
-    // return list;
   }
 
   save = async (obj) =>{
-    //pre or post
+    
     const item = await this.items.save(obj);
+    
     try {
       if (item){
-        return new CarritoDTO(item);
+         return new CarritoDTO(item);
       }
       return false;
     } catch (error) {
       logger.debug("Error al realizar save");
+      console.log(error.message);
       return false;
     }
   }

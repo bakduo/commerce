@@ -11,6 +11,9 @@
                type="text"
                placeholder="Email"
                formControlName="email">
+
+	   <span class="validation-error" *ngIf="(formSubmitted || formSingup.controls.email.touched) && formSingup.controls.email.errors?.required">el email is required</span>
+
       </div>
     </div>
 
@@ -22,6 +25,9 @@
                type="password"
                placeholder="password"
                formControlName="password">
+
+		<span class="validation-error" *ngIf="(formSubmitted || formSingup.controls.password.touched) && formSingup.controls.password.errors?.required">el password is required</span>
+
       </div>
     </div>
 
@@ -33,6 +39,9 @@
                type="text"
                placeholder="tel"
                formControlName="tel">
+
+			   		<span class="validation-error" *ngIf="(formSubmitted || formSingup.controls.tel.touched) && formSingup.controls.tel.errors?.required">el telefono is required</span>
+
               <select class="form-control" placeholder="pais"
                formControlName="pais">
 	<option value="AF">Afghanistan</option>
@@ -296,6 +305,9 @@
                type="text"
                placeholder="direccion"
                formControlName="direccion">
+		
+		<span class="validation-error" *ngIf="(formSubmitted || formSingup.controls.direccion.touched) && formSingup.controls.direccion.errors?.required">la dirección is required</span>
+
       </div>
     </div>
 
@@ -307,6 +319,7 @@
                type="text"
                placeholder="nombre"
                formControlName="nombre">
+		<span class="validation-error" *ngIf="(formSubmitted || formSingup.controls.nombre.touched) && formSingup.controls.nombre.errors?.required">el nombre is required</span>
       </div>
     </div>
 
@@ -318,6 +331,9 @@
                type="text"
                placeholder="edad"
                formControlName="edad">
+
+		<span class="validation-error" *ngIf="(formSubmitted || formSingup.controls.edad.touched) && formSingup.controls.edad.errors?.required">la edad is required</span>
+
       </div>
     </div>
 
@@ -328,6 +344,9 @@
                type="text"
                placeholder="avatar"
                formControlName="avatar">
+
+		<span class="validation-error" *ngIf="(formSubmitted || formSingup.controls.avatar.touched) && formSingup.controls.avatar.errors?.required">La url de un avatar(puede ser cualquier imagen en url) is required</span>
+
       </div>
     </div>
   </div>

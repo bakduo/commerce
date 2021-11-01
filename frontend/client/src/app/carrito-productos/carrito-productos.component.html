@@ -8,7 +8,7 @@
 
     <div class="card animated fadeIn fast" *ngFor="let item of productos; index as i">
 
-    <img class="card-img-top img-fluid" [src]="item.thumbail" [alt]="item.name">
+    <img class="card-img-top img-fluid" [src]="urlBack + '/' + item.thumbail" [alt]="item.name">
     <div class="card-body">
       <h4 class="card-title">{{ item.title }}</h4>
       <p class="card-text"> {{ item.description }} </p>

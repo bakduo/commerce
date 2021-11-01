@@ -1,6 +1,5 @@
 const ProductoModel = require("../model/producto-model");
 const config = require('../config/index');
-const { list } = require("pm2");
 const logger = config.logger;
 
 class ProductosApi {
@@ -10,13 +9,27 @@ class ProductosApi {
         this.model = new ProductoModel();
     }
 
-    findOne = async (value) => {
-        const exist = await this.repo.find({query:{key:'code',value:value}});
-        if (exist){
-            return true
+
+    isValidate(body){
+        return this.model.validate(body);
+    }
+
+
+    getProductoOfCode = async (code)=>{
+        const prod = await this.repo.find({query:{key:'code',value:code}});
+        if (prod){
+            return prod;
         }
         return false;
     }
+
+    // findOne = async (value) => {
+    //     const exist = await this.repo.find({query:{key:'code',value:value}});
+    //     if (exist){
+    //         return true
+    //     }
+    //     return false;
+    // }
 
     add = async (producto) =>{
         const valid = this.model.validate(producto);
@@ -48,8 +61,11 @@ class ProductosApi {
     update = async (id,producto) =>{
         try {
             if (id) {
+                                
                 const valid = this.model.validate(producto);
+                                
                 if (valid){
+
                     const update = await this.repo.updateById(id, producto);
                     return update;
                 }
@@ -63,6 +79,7 @@ class ProductosApi {
 
     getOne = async (id) =>{
         try {
+
             const producto = await this.repo.getId(id);
             if (producto){
             return producto;

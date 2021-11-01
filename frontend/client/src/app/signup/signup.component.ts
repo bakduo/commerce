@@ -12,6 +12,8 @@ export class SignupComponent implements OnInit {
 
   formSingup: FormGroup;
 
+  formSubmitted:boolean = false;
+
   constructor(private router:Router,private fb: FormBuilder,private _loginService:LoginService) {
 
     this.formSingup = this.fb.group({
@@ -30,6 +32,8 @@ export class SignupComponent implements OnInit {
   }
 
   signup(){
+
+    this.formSubmitted = true;
     if ( this.formSingup.valid ) {
 
         console.log("debe enviar");

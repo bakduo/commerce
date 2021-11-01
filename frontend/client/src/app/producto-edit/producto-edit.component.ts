@@ -14,6 +14,8 @@ export class ProductoEditComponent implements OnInit {
 
   index:any;
 
+  formSubmitted:boolean = false;
+
   producto:any = {};
 
   constructor(private router:Router,private fb: FormBuilder,private activatedRoute: ActivatedRoute,private _productoService:ProductoService) {
@@ -25,33 +27,36 @@ export class ProductoEditComponent implements OnInit {
       title  : ['', [ Validators.required, Validators.minLength(5) ]  ],
       description: ['', [Validators.required ] ],
       thumbail : ['',[Validators.required ]],
-      stock   : [0, Validators.required ],
-      code   : [0, Validators.required ],
-      price:[0, Validators.required ],
+      stock   : [0, [Validators.required]],
+      code   : ['', [Validators.required,Validators.minLength(5)]],
+      price:[0, [Validators.required] ],
     });
 
     this.activatedRoute.params.subscribe( params =>{
 
       this._productoService.getProducto(params['id']).subscribe(
-        response => {
+        (response) => {
 
-          this.producto = response;
+            if (response){
 
-          if (this.producto!==null){
+              this.producto = response;
 
-            this.formProducto.reset({
-              name: this.producto.name,
-              title: this.producto.title,
-              description: this.producto.description,
-              code: this.producto.code,
-              stock: this.producto.stock,
-              thumbail:this.producto.thumbail,
-              price:this.producto.price
-            });
-          }
+              this.formProducto.reset({
+                name: this.producto.name,
+                title: this.producto.title,
+                description: this.producto.description,
+                code: this.producto.code,
+                stock: this.producto.stock,
+                thumbail:this.producto.thumbail,
+                price:this.producto.price
+              });
+            }else{
+              alert("No hay producto con este identificador.");
+            }
         },
-        error => {
-          console.log(error);
+      (responseError) => {
+          //console.log(error);
+          alert(responseError.error.statusText);
         });
 
       this.index = params['id'];
@@ -64,14 +69,16 @@ export class ProductoEditComponent implements OnInit {
   }
 
   save(){
-    if ( this.formProducto.valid ) {
 
+    this.formSubmitted = true;
+    if ( this.formProducto.valid ) {
       this._productoService.updateProducto(this.formProducto.value,this.index).subscribe(
         response => {
           this.router.navigate(["/productos"])
         },
-        error => {
-          console.log(error);
+        (responseError) => {
+          //console.log(error);
+          alert(responseError.error.statusText);
         });
     }
   }

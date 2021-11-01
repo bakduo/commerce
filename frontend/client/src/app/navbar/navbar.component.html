@@ -12,8 +12,14 @@
 
       <!-- active -->
       <li class="nav-item" routerLinkActive="active">
+        <a *ngIf="getAuth()" class="nav-link" href="#">User: {{user.nombre}}</a>
+      </li>
+
+
+      <li class="nav-item" routerLinkActive="active">
         <a class="nav-link" [routerLink]="['home']">Home</a>
       </li>
+
       <li class="nav-item" routerLinkActive="active">
         <a *ngIf="getAuth()" class="nav-link" [routerLink]="['productos']">Productos</a>
       </li>
@@ -31,12 +37,18 @@
         <a *ngIf="getAuth()" class="nav-link" [routerLink]="['carrito']">Carrito {{(productosCarrito$ | async)?.length }}</a>
       </li>
 
+      <li class="nav-item" routerLinkActive="active">
+        <a *ngIf="getAuth()" class="nav-link" [routerLink]="['ordenes']">Ordenes</a>
+      </li>
+
     </ul>
 
     <form class="form-inline">
 
-        <button *ngIf="getAuth()" class="btn btn-sm btn-outline-secondary" type="button" (click)="logout()" >Logout</button>
         <button *ngIf="getAuth()" class="btn btn-sm btn-outline-secondary" type="button" (click)="realizarpedido()" >Realizar pedido</button>
+
+        <button *ngIf="getAuth()" class="btn btn-sm btn-outline-secondary" type="button" (click)="logout()" >Logout</button>
+        
 
     </form>
 
@@ -48,13 +60,13 @@
 
 
 <!-- As a heading -->
-<nav class="navbar navbar-light bg-light">
+<nav *ngIf="getAuth()" class="navbar navbar-light bg-light">
   <span class="navbar-brand mb-0 h1">Filter</span>
 
    <form autocomplete="off" class="form-inline" [formGroup]="form" (ngSubmit)="filterSearch()">
 
 
-            <select formControlName="filter" class="dropdown-toggle">
+            <select  formControlName="filter" class="dropdown-toggle">
                 <option class="dropdown-item" disabled>Select filter</option>
                 <option>Choose filter</option>
                 <option class="dropdown-item" *ngFor="let name of filterList">{{name}}</option>

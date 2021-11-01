@@ -12,6 +12,8 @@
                type="text"
                placeholder="Titulo"
                formControlName="title">
+                      <span class="validation-error" *ngIf="(formSubmitted || formProducto.controls.title.touched) && formProducto.controls.title.errors?.required">el title is required</span>
+
       </div>
     </div>
 
@@ -23,6 +25,8 @@
                type="text"
                placeholder="Nombre"
                formControlName="name">
+         <span class="validation-error" *ngIf="(formSubmitted || formProducto.controls.name.touched) && formProducto.controls.name.errors?.required">el nombre is required</span>
+
       </div>
     </div>
 
@@ -35,6 +39,9 @@
                type="text"
                placeholder="Stock"
                formControlName="stock">
+
+        <span class="validation-error" *ngIf="(formSubmitted || formProducto.controls.stock.touched) && formProducto.controls.stock.errors?.required">el stock is required</span>
+
       </div>
     </div>
 
@@ -47,6 +54,8 @@
                type="text"
                placeholder="Code"
                formControlName="code">
+        <span class="validation-error" *ngIf="(formSubmitted || formProducto.controls.code.touched) && formProducto.controls.code.errors?.required">el codigo is required</span>
+
       </div>
     </div>
 
@@ -58,6 +67,8 @@
                type="text"
                placeholder="Price"
                formControlName="price">
+        <span class="validation-error" *ngIf="(formSubmitted || formProducto.controls.price.touched) && formProducto.controls.price.errors?.required">el precio is required</span>
+
       </div>
     </div>
 
@@ -69,7 +80,12 @@
                type="text"
                placeholder="Description"
                formControlName="description">
+
+        <span class="validation-error" *ngIf="(formSubmitted || formProducto.controls.description.touched) && formProducto.controls.description.errors?.required">Descripción is required</span>
+
       </div>
+
+
     </div>
 
 
@@ -88,6 +104,5 @@
 </form>
 
 <hr>
-<pre>
-  Status: {{ formProducto.status }}
-</pre>
+ <br><br>
+    <a [routerLink]="['/productos']" class="btn btn-primary">Regresar</a>

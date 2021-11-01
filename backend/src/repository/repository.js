@@ -1,7 +1,16 @@
+'use strict';
+
 class Repository {
-  constructor(obj) {
-    this.items = obj;
+  #strategy
+
+  constructor(st){
+    this.#strategy = st;
   }
+
+  getStrategy(){
+    return this.#strategy
+  }
+
 }
 
 module.exports = Repository;

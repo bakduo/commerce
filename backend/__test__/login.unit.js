@@ -9,6 +9,7 @@ const UserDAO = require('../src/dao/user-dao');
 const repoUser = new UserDAO(config.db);
 
 let user;
+let token;
 
 describe('Test Login UNIT',() => {
     
@@ -59,6 +60,7 @@ describe('Test Login UNIT',() => {
           expect(responseUser).to.include.keys('SUCCESS','fail','token');
           expect(responseUser.SUCCESS).to.eql(true);
           expect(responseUser.token).to.be.a('string');
+          token = responseUser.token;
           
       });
     })
@@ -68,7 +70,7 @@ describe('Test Login UNIT',() => {
           const loginuser = {
             email:user.email,
             password:'pepito'
-          }
+          };
           let response = await request.post('/api/login').send(loginuser);
           expect(response.status).to.eql(401);
           const responseUser = response.body;
@@ -83,7 +85,7 @@ describe('Test Login UNIT',() => {
     describe('Logout user', () => {
       it('Realizar logout', async () => {    
           
-          let response = await request.post('/api/logout').send();
+          let response = await request.post('/api/logout').set('Authorization',`bearer ${token}`).send();
           expect(response.status).to.eql(200);
           const responseUser = response.body;
           expect(responseUser).to.be.a('object');

@@ -25,6 +25,9 @@ import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { environment } from 'src/environments/environment';
 import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
+import { OrdenesComponent } from './ordenes/ordenes.component';
+import { OrdenService } from './services/orden.service';
+import { OrdenComponent } from './orden/orden.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +43,9 @@ import { SignupComponent } from './signup/signup.component';
     CarritoProductosComponent,
     MensajesUsuariosComponent,
     LoginComponent,
-    SignupComponent  ],
+    SignupComponent,
+    OrdenesComponent,
+    OrdenComponent  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -49,7 +54,7 @@ import { SignupComponent } from './signup/signup.component';
     HttpClientModule,
     SocketIoModule.forRoot(configSocket)
   ],
-  providers: [ProductoService,ControlauthService,CarritoService,TokenService],
+  providers: [ProductoService,ControlauthService,CarritoService,TokenService,OrdenService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

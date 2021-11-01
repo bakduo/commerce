@@ -1,22 +1,51 @@
 const CarritoModel = require("../model/carrito-model");
 const config = require('../config/index');
 const logger = config.logger;
+const ProductosApi = require("./productos-api");
+const { asyncForEach } = require("../util/utils");
+
 
 class CarritosApi {
     
     constructor(repo,repoproductos){
-        this.repo = repo;
-        this.repoproductos = repoproductos;
-        this.model = new CarritoModel();
+        this.repo=repo;
+        this.model= new CarritoModel();
+        this.apiProductos = new ProductosApi(repoproductos);
     }
 
+     clear = async (idsession) =>{
+
+        try {
+
+            let items = await this.repo.getItems();
+
+            let procesados = items.map((item)=>{
+                if (item.getCarritoSession()==idsession){
+                    return item;
+                };
+            });
+
+            await asyncForEach(procesados,async(item) => {
+                await this.deleteOne(item.getId());
+            });    
+        
+            return true;
+
+        } catch (error) {
+            logger.debug(`Exception clear CarritosApi ${error} `)
+            return false;
+        }
+    
+     }
+
     findOneProducto = async (value) => {
-        const exist = await this.repoproductos.getId(value);
+        //const exist = await this.repoproductos.getId(value);
+        const exist = await this.apiProductos.getOne(value);
         if (exist){
             return exist
         }
         return false;
-    }
+    };
 
     add = async (producto) =>{
       
@@ -71,7 +100,7 @@ class CarritosApi {
             if (producto){
               return producto;
             }
-            return false    
+            return false
         } catch (error) {
             logger.debug(`Error ${error}`);
             return false;

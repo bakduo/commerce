@@ -1,6 +1,5 @@
-const ProductoDTO = require('../dto/producto-dto');
-
 const GenericDAO = require('./generic-dao');
+const ProductoDTO = require('../dto/producto-dto');
 
 class ProductoDAO extends GenericDAO {
   static instancia;

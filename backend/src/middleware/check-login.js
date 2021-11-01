@@ -19,7 +19,7 @@ exports.checkJWT = async (req, res, next) => {
       const { email, password } = req.body;
       let usuario = await repo.find({query:{key:'email',value:email}});
       if (!usuario) {
-        return res.json({ SUCCESS: false, fail: 'usuario no encontrado' });
+        return res.json({ SUCCESS: false, fail: 'usuario o password invalido' });
       } else {
         const valid = await isValidPassword(usuario, password);
         if (!valid) {

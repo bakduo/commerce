@@ -1,5 +1,4 @@
 const express = require('express');
-
 const ProductoController = require('../controller/productos');
 const passport = require('passport');
 const WPassport = require('../middleware/wpassport');
@@ -26,6 +25,7 @@ const controller = new ProductoController(repo);
 const wpassport = new WPassport(userrepo, credentialrepo);
 wpassport.init();
 
+
 routerProduct.get('/listar', controller.getProductos);
 
 routerProduct.get('/listar/:id', control.checkIdGet, controller.getProducto);
@@ -35,8 +35,17 @@ routerProduct.post(
   [
     passport.authenticate('jwt', { session: false }),
     control.authorize('admin'),
+    config.uploadstorage.single('thumbail')
   ],
   controller.postProducto
+);
+
+routerProduct.post(
+  '/guardarencoding',
+  [
+    passport.authenticate('jwt', { session: false }),
+    control.authorize('admin')],
+  controller.postProductoEncoding
 );
 
 routerProduct.put(
@@ -46,6 +55,15 @@ routerProduct.put(
     control.authorize('admin'),
   ],
   controller.putProducto
+);
+
+routerProduct.put(
+  '/actualizarencoding/:id',
+  [
+    passport.authenticate('jwt', { session: false }),
+    control.authorize('admin'),
+  ],
+  controller.putProductoEncoding
 );
 
 routerProduct.delete(

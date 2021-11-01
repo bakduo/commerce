@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import {ProductoService } from '../services/producto.service';
 
@@ -12,6 +12,7 @@ export class ProductoCreateComponent implements OnInit {
 
 
   formProducto: FormGroup;
+  formSubmitted:boolean = false;
 
   constructor(private router:Router,private fb: FormBuilder,
     private _productoService:ProductoService) {
@@ -21,18 +22,36 @@ export class ProductoCreateComponent implements OnInit {
         title  : ['', [ Validators.required, Validators.minLength(3) ]  ],
         description: ['', [Validators.required ] ],
         thumbail : ['',[Validators.required ]],
+        thumbailsrc : ['',[Validators.required ]],
         stock   : [0, Validators.required ],
-        code   : [0, Validators.required ],
+        code   : ['', Validators.required ],
         price:[0, Validators.required ],
       });
 
     }
 
   ngOnInit(): void {
+  }
 
+
+  onFileChange(event:any) {
+    if (event.target.files && event.target.files[0]) {
+
+     let reader = new FileReader();
+    
+     reader.onload = (event:any) => {
+
+        this.formProducto.patchValue({
+          thumbailsrc: event.target.result
+        });
+      }
+     reader.readAsDataURL(event.target.files[0]);
+
+    }
   }
 
   save(){
+    this.formSubmitted = true;
     if ( this.formProducto.valid ) {
       this._productoService.addProducto(this.formProducto.value)
       .subscribe(
@@ -45,10 +64,10 @@ export class ProductoCreateComponent implements OnInit {
             this.router.navigate(["/productos"]);
           }
         },
-        error => {
-          console.log(error);
+        (responseError) => {
+          //console.log(error);
+          alert(responseError.error.statusText);
         });
-
     }
   }
 

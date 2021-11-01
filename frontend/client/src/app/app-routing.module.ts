@@ -9,6 +9,8 @@ import { ProductoComponent } from './producto/producto.component';
 import { ProductoCreateComponent } from './producto-create/producto-create.component';
 import { ProductoEditComponent } from './producto-edit/producto-edit.component';
 import {ControlRoutesGuard} from './control-routes.guard';
+import { OrdenesComponent } from './ordenes/ordenes.component';
+import { OrdenComponent } from './orden/orden.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -18,6 +20,8 @@ const routes: Routes = [
   { path: 'producto-create', component: ProductoCreateComponent,canActivate:[ControlRoutesGuard] },
   { path: 'producto-edit/:id', component: ProductoEditComponent,canActivate:[ControlRoutesGuard] },
   { path: 'carrito', component: CarritoProductosComponent,canActivate:[ControlRoutesGuard] },
+  { path: 'ordenes', component: OrdenesComponent,canActivate:[ControlRoutesGuard] },
+  { path: 'orden/:id', component: OrdenComponent,canActivate:[ControlRoutesGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
   { path: '**', pathMatch: 'full', redirectTo: 'home' }

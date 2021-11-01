@@ -42,6 +42,9 @@ export class LoginComponent implements OnInit {
               }
 
             }
+          },
+          (responseError)=>{
+            alert(responseError.error.fail);
           }
         )
     }

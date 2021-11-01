@@ -7,6 +7,7 @@ import { ControlauthService } from '../services/controlauth.service';
 import { ProductoService } from '../services/producto.service';
 import { Router } from '@angular/router';
 import { LoginService } from '../services/login.service';
+import { OrdenService } from '../services/orden.service';
 
 @Component({
   selector: 'app-navbar',
@@ -19,11 +20,14 @@ export class NavbarComponent implements OnInit,OnDestroy {
   productosCarrito$:Observable<any[]>;
   productosCarritoSubScription:Subscription;
 
+  user:TokenUser;
+  
   form: FormGroup;
 
   filterList: any = ['name', 'code', 'stock','price']
 
   constructor(private _loginService: LoginService,
+    private _ordenService:OrdenService,
     private _tokenService:TokenService,private fb: FormBuilder,private _controlService:ControlauthService,private _carritoService:CarritoService,private _productoService:ProductoService,private router:Router) {
 
     this.productosCarrito$ = this._carritoService.getProductos$();
@@ -47,14 +51,16 @@ export class NavbarComponent implements OnInit,OnDestroy {
         this.productos = products;
         this._carritoService.update(this.productos);
       },
-      error => {
-        console.log(error);
+      (responseError) => {
+        //console.log(error);
       });
   }
 
   getAuth(){
     try {
       if (this._tokenService.getToken()){
+        this.user = this._tokenService.getToken();
+
         return true
       }
       return false
@@ -98,17 +104,21 @@ export class NavbarComponent implements OnInit,OnDestroy {
   }
 
   realizarpedido(){
-    this._carritoService.makeAndOrder()
+    this._ordenService.makeAndOrder()
     .subscribe(
       (response:any) => {
-        if (response.SUCCESS){
-            alert("Su pedido esta en proceso...")
+        if (response.status){
+                        
+            this._ordenService.addOrden(response.orden);
+
+            alert("Su pedido fue generado...");
+
         }else{
           alert(response.fail);
         }
       },
-      error => {
-        console.log(error);
+      (responseError) => {
+        alert(responseError.error.fail);
       });
 
   }

@@ -33,6 +33,7 @@ const ProductoSchema = new Schema(
       type: String,
       required: true,
       default: '',
+      unique: true
     },
     price: {
       type: Number,

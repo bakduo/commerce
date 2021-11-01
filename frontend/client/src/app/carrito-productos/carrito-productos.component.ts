@@ -1,6 +1,7 @@
 import { Carrito, CarritoService } from './../services/carrito.service';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-carrito-productos',
@@ -11,7 +12,12 @@ export class CarritoProductosComponent implements OnInit {
 
   productos: Carrito[] = [];
 
-  constructor(private router:Router,private _carritoService:CarritoService) { }
+  urlBack:string;
+
+  constructor(private router:Router,private _carritoService:CarritoService) { 
+
+    this.urlBack = environment.backend;
+  }
 
   ngOnInit(): void {
 

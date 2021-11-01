@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { CarritoService } from '../services/carrito.service';
 import { ControlauthService } from '../services/controlauth.service';
 import { ProductoService } from '../services/producto.service';
+import { environment } from 'src/environments/environment';
+
 
 @Component({
   selector: 'app-producto-tarjeta',
@@ -17,11 +19,14 @@ export class ProductoTarjetaComponent implements OnInit {
 
   @Output() productoSeleccionado: EventEmitter<any>;
 
+  urlBack:string;
+
   //role:boolean = false;
 
   constructor(private _tokenService:TokenService,private _carritoService:CarritoService,private router:Router,private _productoService:ProductoService) {
     this.productoSeleccionado = new EventEmitter();
     this.index = '';
+    this.urlBack = environment.backend;
     //this.role = _controlService.getRole();
   }
 

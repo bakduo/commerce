@@ -19,7 +19,9 @@ let token = '';
 describe('Test productos UNIT',() => {
     
     before(async function(){
+
         console.log("###############BEGIN TEST#################");
+
         user = testUserRecords.getOneAdmin();
         let responseUser = await request.post('/api/signup').send(user);
         expect(responseUser.status).to.eql(200);
@@ -33,7 +35,8 @@ describe('Test productos UNIT',() => {
         expect(responseUserData).to.be.a('object');
         expect(responseUserData).to.include.keys('SUCCESS','fail','token');
         token = responseUserData.token;
-        productosFake = testRecords.load();
+        productosFake = await testRecords.loadEncoding();
+        
     })
 
     after(async () => {
@@ -65,8 +68,8 @@ describe('Test productos UNIT',() => {
 
     describe('POST producto', () => {
         it('debería incorporar un producto', async () => {
-            productoPost = testRecords.getOne();
-            let response = await request.post('/api/productos/guardar').set('Authorization',`bearer ${token}`).send(productoPost)
+            productoPost = await testRecords.getOneEncoding();
+            let response = await request.post('/api/productos/guardarencoding').set('Authorization',`bearer ${token}`).send(productoPost)
             expect(response.status).to.eql(201);
             const productoSave = response.body;
             expect(productoSave).to.include.keys('price','name','thumbail','code','description','title','stock');
@@ -75,14 +78,14 @@ describe('Test productos UNIT',() => {
             expect(productoSave.stock).to.eql(productoPost.stock)
             expect(productoSave.title).to.eql(productoPost.title)
             expect(productoSave.price).to.eql(productoPost.price)
-            expect(productoSave.thumbail).to.eql(productoPost.thumbail)
+            expect(productoSave.thumbail).to.be.a('string');
             expect(productoSave.name).to.eql(productoPost.name);
         })
     })
 
     describe('POST producto repetido', () => {
         it('No debería incorporar un producto', async () => { 
-            let response = await request.post('/api/productos/guardar').set('Authorization',`bearer ${token}`).send(productoPost)
+            let response = await request.post('/api/productos/guardarencoding').set('Authorization',`bearer ${token}`).send(productoPost)
             const productoSave = response.body;
             expect(response.status).to.eql(208);
             expect(productoSave).to.include.keys('status');
@@ -99,7 +102,7 @@ describe('Test productos UNIT',() => {
                 description:'ffdsfs',
             };
 
-            let response = await request.post('/api/productos/guardar').set('Authorization',`bearer ${token}`).send(productoFake)
+            let response = await request.post('/api/productos/guardarencoding').set('Authorization',`bearer ${token}`).send(productoFake)
             const productoSave = response.body;
             expect(response.status).to.eql(500);
             expect(productoSave).to.include.keys('status');
@@ -109,22 +112,25 @@ describe('Test productos UNIT',() => {
     describe('Update producto', () => {
         it('debería actualizar un producto', async () => {
             //const p = await repo.find({query: {'key':'code','value':productoPost.code}});
-            productoPost = testRecords.getOne();
-            const p = await repo.save(productoPost);
-            productoPost.name = 'update';
-            productoPost.price= 22222;
-            productoPost.stock= 1;
-            let response = await request.put(`/api/productos/actualizar/${p.getId()}`).set('Authorization',`bearer ${token}`).send(productoPost);
+            let productoPost2 = testRecords.getOne();
+            
+            const p = await repo.save(productoPost2);
+            
+            productoPost2.name = 'update';
+            productoPost2.price= 22222;
+            productoPost2.stock= 1;
+            
+            let response = await request.put(`/api/productos/actualizar/${p.getId()}`).set('Authorization',`bearer ${token}`).send(productoPost2);
             expect(response.status).to.eql(200)
             const productoSave = response.body;
             expect(productoSave).to.include.keys('price','name','thumbail','code','description','title','stock')
-            expect(productoSave.description).to.eql(productoPost.description)
-            expect(productoSave.code).to.eql(productoPost.code)
-            expect(productoSave.title).to.eql(productoPost.title)
-            expect(productoSave.price).to.eql(productoPost.price)
-            expect(productoSave.thumbail).to.eql(productoPost.thumbail)
-            expect(productoSave.name).to.eql(productoPost.name);
-            expect(productoSave.stock).to.eql(productoPost.stock);
+            expect(productoSave.description).to.eql(productoPost2.description)
+            expect(productoSave.code).to.eql(productoPost2.code)
+            expect(productoSave.title).to.eql(productoPost2.title)
+            expect(productoSave.price).to.eql(productoPost2.price)
+            expect(productoSave.thumbail).to.be.a('string');
+            expect(productoSave.name).to.eql(productoPost2.name);
+            expect(productoSave.stock).to.eql(productoPost2.stock);
         });
     })
 
@@ -140,7 +146,7 @@ describe('Test productos UNIT',() => {
 
     describe('Get producto by id', () => {
         it('debería obtener un producto por id', async () => {
-            productoPost = testRecords.getOne();
+            productoPost = await testRecords.getOneEncoding();
             const p = await repo.save(productoPost);
             let response = await request.get(`/api/productos/listar/${p.getId()}`).send();
             expect(response.status).to.eql(200);
@@ -151,14 +157,14 @@ describe('Test productos UNIT',() => {
             expect(productoSave.stock).to.eql(p.getStock())
             expect(productoSave.title).to.eql(p.getTitle())
             expect(productoSave.price).to.eql(p.getPrice())
-            expect(productoSave.thumbail).to.eql(p.getThumbail())
+            expect(productoSave.thumbail).to.be.a('string');
             expect(productoSave.name).to.eql(p.getName());
         });
     })
 
     describe('Delete producto', () => {
         it('debería eliminar un producto', async () => {
-            productoPost = testRecords.getOne();
+            productoPost = await testRecords.getOneEncoding();
             const p = await repo.save(productoPost);
             let response = await request.delete(`/api/productos/borrar/${p.getId()}`).set('Authorization',`bearer ${token}`).send();
             expect(response.status).to.eql(200);
@@ -168,7 +174,7 @@ describe('Test productos UNIT',() => {
             expect(productoDelete.name).to.eql(productoPost.name)
             expect(productoDelete.code).to.eql(productoPost.code)
             expect(productoDelete.price).to.eql(productoPost.price)
-            expect(productoDelete.thumbail).to.eql(productoPost.thumbail)
+            expect(productoDelete.thumbail).to.be.a('string');
             expect(productoDelete.description).to.eql(productoPost.description);
         });
     })

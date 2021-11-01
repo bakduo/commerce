@@ -73,15 +73,14 @@ export class ProductoService {
   Authorization: Bearer XXXXXX token
   .append('x-api-custom','true');
   */
-  addProducto(p:Producto){
+  addProducto(p:any){
     let headersCustom = new HttpHeaders()
     .set('content-type','application/json')
     .append('Authorization','Bearer '+this._tokenService.getTokenRaw());
-    return this.http.post(`${ this.url }/guardar`,p, {headers: headersCustom});
+    return this.http.post(`${ this.url }/guardarencoding`,p, {headers: headersCustom});
   }
 
-  updateProducto(p:Producto,id:any){
-
+  updateProducto(p:any,id:any){
     let headersCustom = new HttpHeaders()
     .set('content-type','application/json')
     .append('Authorization','Bearer '+this._tokenService.getTokenRaw());

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { environment } from 'src/environments/environment';
 import { ProductoService } from '../services/producto.service';
 
 @Component({
@@ -11,17 +12,22 @@ export class ProductoComponent implements OnInit {
 
   producto: any = {};
 
+  urlBack: string;
+
   constructor(private activatedRoute: ActivatedRoute,
     private _productoService: ProductoService) {
 
+      this.urlBack=environment.backend;
+      
       this.activatedRoute.params.subscribe( params =>{
 
         this.producto = this._productoService.getProducto(params['id']).subscribe(
           product => {
             this.producto = product;
           },
-          error => {
-            console.log(error);
+          (responseError) => {
+            //console.log(error);
+            alert(responseError.error.statusText);
           });;
 
       });

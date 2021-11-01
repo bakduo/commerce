@@ -9,8 +9,8 @@ class ProductoDTO {
   #title
   #stock
   
-  constructor({id,name,price,thumbail,stock,code,description,title}){
-      this.#id=id;
+  constructor({id,name,price,thumbail,stock,code,description,title,_id}){
+      this.#id=id || _id;
       this.#name=name;
       this.#price=price;
       this.#thumbail=thumbail;
@@ -18,6 +18,10 @@ class ProductoDTO {
       this.#title = title;
       this.#description = description;
       this.#stock = stock;
+  }
+
+  setId(id){
+    this.#id = id;
   }
 
   setName(name){

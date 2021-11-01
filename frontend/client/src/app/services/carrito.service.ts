@@ -44,13 +44,6 @@ export class CarritoService {
       return this.http.post(`${ this.url }/agregar/${idx}`,{},{headers: headersCustom});
   }
 
-  makeAndOrder(){
-    let headersCustom = new HttpHeaders()
-    .set('content-type','application/json')
-    .append('Authorization','Bearer '+this._tokenService.getTokenRaw());
-      return this.http.post(`${ this.url }/realizarpedido`,{},{headers: headersCustom});
-  }
-
   private customResponse( carritoObj: any ) {
 
     const productosTemp: Carrito[] = [];

@@ -2,13 +2,11 @@
 
 const IncludeProductos = require('../util/busquedas/include-productos');
 const config = require('../config/index');
-const providerEmail1 = config.emails[0];
-const EmailService = require('../services/emailservice');
-
-const SMService = require('../services/smsservice');
-const sms = new SMService();
+//const providerEmail1 = config.emails[0];
+//const EmailService = require('../services/emailservice');
+//const SMService = require('../services/smsservice');
+//const sms = new SMService();
 const logger = config.logger;
-
 const CarritosApi = require('../api/carrito-api');
 
 /**
@@ -16,12 +14,13 @@ const CarritosApi = require('../api/carrito-api');
  * Desde mi punto de vista deberia ser carrito : { [p1...pn]}.
  */
 class CarritoController {
-  constructor(repository, repositoryProductos) {
+
+  constructor(repository, repositoryProductos,repoorden){
     //this.repo = repository;
     //this.productos = repositoryProductos;
-    this.service = new EmailService();
-    this.api = new CarritosApi(repository,repositoryProductos);
-  }
+    //this.service = new EmailService();
+    this.api = new CarritosApi(repository,repositoryProductos,repoorden);
+  };
 
   /**
    * [async description]
@@ -174,84 +173,108 @@ class CarritoController {
   };
 
   makeAndOrder = async (req, res, next) => {
-    const user = req.user;
-    logger.info(
-      '###############Administrador procesa pedido#############'
-    );
+    
+    try {
+      
+        const result = await this.api.generateOrder(req.user);
 
-    logger.info(
-      '##########Deberia enviar mail de registro al administrador##############'
-    );
-    /*******************SMS */
-    if (config.sms.fromtel) {
-      try {
-        const texto =
-          'Usted: ' +
-          user.nombre +
-          'email: ' +
-          user.email +
-          'solicito el envio de su pedido. En la brevedad nos ponemos en contacto con usted.';
-        logger.info('########SMS: ' + texto + '#################');
-        sms.send(texto, user.tel);
-
-        /******************Correo */
-
-        let productos = await this.api.getAll();
-        productos = productos.filter(
-          (item) => item.getCarritoSession() == user.id
-        );
-
-        if (productos.length <= 1) {
-          return res.status(500).json({
-            SUCCESS: false,
-            fail: 'Ustes no tiene los productos suficientes para realizar el envio',
+        if (result.SUCCESS){
+          return res.status(200).json({
+            SUCCESS:'La orden fue generada.',
+            fail: false
           });
         }
 
-        let productosText = '';
-        productos.forEach((item) => {
-          productosText = productosText + '<li>' + item.getName() + '</li>';
-        });
-        const fechaLogin = new Date().toISOString();
-        this.service.initialize(providerEmail1);
-        this.service.setFrom('Sistemas registro de envios');
-        this.service.send(
-          'Se registro nuevo envio de ' + user.email,
-          config.email_to,
-          `
-                <i>Usuario solicito envio de: </i>
-                <br>
-                <ul>
-                
-                  ${productosText}
+        return res.status(500).json(result);
 
-                </ul> 
-                <b> 
-                  ${fechaLogin} 
-                  <hr>
-                </b>
-                `
-        );
-        logger.debug(
-          '##########Deberia enviar mail con los datos del producto##############'
-        );
-      } catch (error) {
-        logger.error(`Error Al procesar pedido: ${error}`);
-        return res.status(500).json({
-          SUCCESS: false,
-          fail: 'Error al procesar pedido',
-        });
-      }
-    } else {
-      logger.error(
-        '######################No hay telefono configurado para la salida del pedido#####################'
-      );
+    } catch (error) {
+
+      logger.debug(`Exception generada en MakeAndOrder: ${error}`);
+
       return res.status(500).json({
-        SUCCESS: null,
-        fail: 'No hay linea disponible para procesar el pedido',
+             SUCCESS: false,
+             fail: 'Ocurrio un error en el sistema. No fue posible procesar su pedido.',
       });
     }
-    return res.status(200).json({ SUCCESS: 'Order incomming...', fail: false });
+
+    // const user = req.user;
+    // logger.info(
+    //   '###############Administrador procesa pedido#############'
+    // );
+
+    // logger.info(
+    //   '##########Deberia enviar mail de registro al administrador##############'
+    // );
+    // /*******************SMS */
+    // if (config.sms.fromtel) {
+    //   try {
+    //     const texto =
+    //       'Usted: ' +
+    //       user.nombre +
+    //       'email: ' +
+    //       user.email +
+    //       'solicito el envio de su pedido. En la brevedad nos ponemos en contacto con usted.';
+    //     logger.info('########SMS: ' + texto + '#################');
+    //     sms.send(texto, user.tel);
+
+    //     /******************Correo */
+
+    //     let productos = await this.api.getAll();
+    //     productos = productos.filter(
+    //       (item) => item.getCarritoSession() == user.id
+    //     );
+
+    //     if (productos.length <= 1) {
+    //       return res.status(500).json({
+    //         SUCCESS: false,
+    //         fail: 'Ustes no tiene los productos suficientes para realizar el envio',
+    //       });
+    //     }
+
+    //     let productosText = '';
+    //     productos.forEach((item) => {
+    //       productosText = productosText + '<li>' + item.getName() + '</li>';
+    //     });
+    //     const fechaLogin = new Date().toISOString();
+    //     this.service.initialize(providerEmail1);
+    //     this.service.setFrom('Sistemas registro de envios');
+    //     this.service.send(
+    //       'Se registro nuevo envio de ' + user.email,
+    //       config.email_to,
+    //       `
+    //             <i>Usuario solicito envio de: </i>
+    //             <br>
+    //             <ul>
+                
+    //               ${productosText}
+
+    //             </ul> 
+    //             <b> 
+    //               ${fechaLogin} 
+    //               <hr>
+    //             </b>
+    //             `
+    //     );
+    //     logger.debug(
+    //       '##########Deberia enviar mail con los datos del producto##############'
+    //     );
+    //   } catch (error) {
+    //     logger.error(`Error Al procesar pedido: ${error}`);
+    //     return res.status(500).json({
+    //       SUCCESS: false,
+    //       fail: 'Error al procesar pedido',
+    //     });
+    //   }
+    // } else {
+    //   logger.error(
+    //     '######################No hay telefono configurado para la salida del pedido#####################'
+    //   );
+    //   return res.status(500).json({
+    //     SUCCESS: null,
+    //     fail: 'No hay linea disponible para procesar el pedido',
+    //   });
+    // }
+    // return res.status(200).json({ SUCCESS: 'Order incomming...', fail: false });
   };
 
 }

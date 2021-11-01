@@ -1,0 +1,29 @@
+<h1 class="animated fadeIn">Cantidad de productos <small>({{ productos.length}})</small> por un total de:  <small>{{ totalCompra | currency }}</small></h1>
+<hr>
+
+<div class="card-columns">
+
+    <div class="card animated fadeIn fast" *ngFor="let item of productos; index as i">
+    
+    <div class="card-body">
+      <h4 class="card-title">Nombre: {{ item.name }}</h4>
+      <p class="card-text">Código: {{ item.code }} </p>
+      <p class="card-text">Precio: <small class="text-muted">{{ item.price }}</small></p>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="row animated fadeIn fast">
+
+  <div class="col-md-4">
+
+    <br><br>
+    <a [routerLink]="['/ordenes']" class="btn btn-outline-primary btn-block">Regresar</a>
+
+  </div>
+
+  
+
+</div>

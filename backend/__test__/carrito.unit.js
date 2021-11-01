@@ -23,7 +23,6 @@ let token = '';
 let carritosCargados;
 
 
-
 describe('Test Carrito UNIT',() => {
     
     before(async function(){
@@ -202,7 +201,7 @@ describe('Test Carrito UNIT',() => {
             expect(productoSave.thumbail).to.eql(carritosCargados[0].thumbail)
             expect(productoSave.name).to.eql(carritosCargados[0].name);
         });
-      })
+      });
 
       describe('Delete un producto II del carrito', () => {
         it('debería eliminar el 2º producto del carrito', async () => {
@@ -228,17 +227,6 @@ describe('Test Carrito UNIT',() => {
             expect(productoSave).to.include.keys('status');
             expect(productoSave.status).to.eql('Producto no encontrado.')
         });
-      })
-
-      describe('Realizar la compra', () => {
-        it('Debería realizar la compra del carrito', async () => {
-            let response = await request.post(`/api/carrito/realizarpedido`).set('Authorization',`bearer ${token}`).send();
-            const productoSave = response.body;
-            expect(response.status).to.eql(200);
-            expect(productoSave).to.include.keys('SUCCESS','fail');
-            expect(productoSave.SUCCESS).to.eql('Order incomming...');
-        });
-      })
-  
+      });
 
 });

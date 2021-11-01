@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { ControlauthService } from '../services/controlauth.service';
 import { TokenService } from '../services/token.service';
 
+
 @Component({
   selector: 'app-productos',
   templateUrl: './productos.component.html',
@@ -31,8 +32,8 @@ export class ProductosComponent implements OnInit {
         products => {
           this.productos = products;
         },
-        error => {
-          console.log(error);
+        (responseError) => {
+          alert(responseError.error.statusText);
         });
     this.username = this.getAuth().email;
   }

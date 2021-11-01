@@ -1,14 +1,16 @@
 /**
  * Commerce
  */
+const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const app = express();
-
 const requestId = require('express-request-id')();
 const routerProductos = require('./routes/productos');
 const routerCarrito = require('./routes/carrito');
 const routerLogin = require('./routes/login');
+const routerOrden = require('./routes/orden');
+const routerImagen = require('./routes/imagen');
 
 const config = require('./config/index');
 const logger = config.logger;
@@ -38,12 +40,13 @@ function shouldCompress(req, res) {
   return compression.filter(req, res);
 }
 
+//app.use(express.limit(100000000));
 // indico donde estan los archivos estaticos
-app.use(express.static('public'));
-app.use(express.json());
+app.use(express.static(path.join(__dirname, "public")));
+app.use(express.json({limit: '4mb'}));
 app.use(requestId);
 //app.use(logger.requests);
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ limit: '6mb',extended: true }));
 
 //Uso token en lugar de session
 //initialize session
@@ -63,6 +66,9 @@ app.use(cors(config.server.cors.server));
 app.use('/api/productos', routerProductos);
 app.use('/api/carrito', routerCarrito);
 app.use('/api', routerLogin);
+app.use('/api/orden',routerOrden);
+app.use('/public',routerImagen);
+
 
 app.use((req, res, next) => {
   const mensaje = {

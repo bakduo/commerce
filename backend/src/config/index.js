@@ -5,6 +5,8 @@ const SessionCustom = require('../session/sessioncustom');
 const oneMinute = 1000 * 60;
 const childProcess = require('child_process');
 const stream = require('stream');
+const multer = require('multer');
+const uuid4 = require("uuid").v4;
 
 //Soporte tmb para dotenv
 const dotenv = require('dotenv');
@@ -86,7 +88,34 @@ const config = {
   passportLogin: supportPassport,
   secret: `${app.secret}`,
   sms: app.twilio,
+  uploadfolder: app.uploadfolder,
+  uploadstorage: {}
 };
+
+// configuro multer
+const storage = multer.diskStorage({
+  destination: config.uploadfolder,
+  filename: function (req, file, cb) {
+    const fullName =
+      "commerce_" + uuid4().replace(/-/g, "") + path.extname(file.originalname);
+    cb(null, fullName);
+  }
+});
+
+config.uploadstorage = multer({ 
+  storage: storage, 
+  limits: { fileSize: 2000000 },
+  fileFilter: function (req, file, cb) {
+    const fileTypes = /png|jpeg|jpg/;
+    const extName = fileTypes.test(path.extname(file.originalname));
+    file.originalname.toLowerCase();
+    const mimeType = fileTypes.test(file.mimetype);
+    if (extName && mimeType) {
+      cb(null, true);
+    } else {
+      cb("Error: only png, jpeg, and jpg are allowed!");
+    }
+  }});
 
 if (process.argv.length >= 3) {
   config.logger.info(process.argv);

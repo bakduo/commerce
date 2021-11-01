@@ -1,6 +1,6 @@
 <h4>Producto <small> crear </small></h4>
 <hr>
-<form autocomplete="off" [formGroup]="formProducto" (ngSubmit)="save()">
+<form autocomplete="off" [formGroup]="formProducto" (ngSubmit)="save()" enctype="multipart/form-data">
 
   <div>
 
@@ -12,6 +12,7 @@
                type="text"
                placeholder="Titulo"
                formControlName="title">
+              <span class="validation-error" *ngIf="(formSubmitted || formProducto.controls.title.touched) && formProducto.controls.title.errors?.required">el title is required</span>
       </div>
     </div>
 
@@ -23,6 +24,7 @@
                type="text"
                placeholder="Nombre"
                formControlName="name">
+        <span class="validation-error" *ngIf="(formSubmitted || formProducto.controls.name.touched) && formProducto.controls.name.errors?.required">el nombre is required</span>
       </div>
     </div>
 
@@ -35,6 +37,8 @@
                type="text"
                placeholder="Stock"
                formControlName="stock">
+        <span class="validation-error" *ngIf="(formSubmitted || formProducto.controls.stock.touched) && formProducto.controls.stock.errors?.required">el stock is required</span>
+
       </div>
     </div>
 
@@ -47,6 +51,8 @@
                type="text"
                placeholder="Code"
                formControlName="code">
+              <span class="validation-error" *ngIf="(formSubmitted || formProducto.controls.code.touched) && formProducto.controls.code.errors?.required">el codigo is required</span>
+
       </div>
     </div>
 
@@ -58,6 +64,7 @@
                type="text"
                placeholder="Price"
                formControlName="price">
+        <span class="validation-error" *ngIf="(formSubmitted || formProducto.controls.price.touched) && formProducto.controls.price.errors?.required">el precio is required</span>
       </div>
     </div>
 
@@ -69,6 +76,9 @@
                type="text"
                placeholder="Description"
                formControlName="description">
+
+       <span class="validation-error" *ngIf="(formSubmitted || formProducto.controls.description.touched) && formProducto.controls.description.errors?.required">Descripción is required</span>
+
       </div>
     </div>
 
@@ -77,9 +87,17 @@
       <div class="col">
 
         <input class="form-control"
-               type="text"
+               type="file"
+               id="thumbail"
                placeholder="Imagen"
-               formControlName="thumbail">
+               name="thumbail"
+               formControlName="thumbail"
+               (change)="onFileChange($event)"
+               >
+
+         <span class="validation-error" *ngIf="(formSubmitted || formProducto.controls.thumbail.touched) && formProducto.controls.thumbail.errors?.required">Image is required</span>
+
+         
       </div>
     </div>
 

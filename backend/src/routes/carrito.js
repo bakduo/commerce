@@ -1,5 +1,4 @@
 const express = require('express');
-
 const CarritoController = require('../controller/carrito');
 const passport = require('passport');
 const WPassport = require('../middleware/wpassport');
@@ -25,6 +24,7 @@ const repoProductos = new ProductoDAO(config.db);
 const controller = new CarritoController(repo, repoProductos);
 
 const wpassport = new WPassport(userrepo, credentialrepo);
+
 wpassport.init();
 
 /******Control router*************/
@@ -45,12 +45,6 @@ routerCarrito.post(
   '/agregar/:id',
   passport.authenticate('jwt', { session: false }),
   controller.addProducto
-);
-
-routerCarrito.post(
-  '/realizarpedido',
-  passport.authenticate('jwt', { session: false }),
-  controller.makeAndOrder
 );
 
 routerCarrito.delete(
