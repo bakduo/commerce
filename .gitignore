@@ -16,6 +16,15 @@ backend/nosql.env
 backend/sqlite.env
 backend/public
 
+backend/dist
+
+backend/Dockerfile
+backend/Makefile
+backend/dist/
+backend/ecosystem.config.js
+frontend/client/Dockerfile
+frontend/client/Makefile
+frontend/client/src/environments/environment.prod.ts
 frontend/client/node_modules
 
 # compiled output
