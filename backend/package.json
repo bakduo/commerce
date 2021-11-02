@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=production node src/run.js",
+    "start": "cross-env NODE_ENV=production node bin/run.js",
     "test": "cross-env NODE_ENV='development' ./node_modules/.bin/mocha __test__/*.*.js --reporter mochawesome --timeout 15000 --exit",
     "dev": "cross-env NODE_ENV='development' node_modules/.bin/nodemon --inspect bin/run.js",
     "pm2": "cross-env NODE_ENV='development' ./node_modules/.bin/pm2 start bin/run.js --name='commerce1' --watch --"
