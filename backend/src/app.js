@@ -59,9 +59,6 @@ app.use(express.urlencoded({ limit: '6mb',extended: true }));
 //     cookie: { maxAge: config.timesession, expires: config.timesession },
 //   })
 // );
-
-// Auth every request
-//app.use(middlewareauth.fakeAuth);
 app.use(cors(config.server.cors.server));
 app.use('/api/productos', routerProductos);
 app.use('/api/carrito', routerCarrito);
@@ -82,18 +79,6 @@ app.use((req, res, next) => {
     level: 'warn',
   });
 });
-
-// eslint-disable-next-line no-unused-vars
-// app.use((err, req, res, next) => {
-//   const { statusCode = 500, message } = err;
-
-//   const log = `${logger.header(req)} ${statusCode} ${message}`;
-//   logger.error(log);
-//   res.status(statusCode);
-//   res.json({
-//     message,
-//   });
-// });
 
 //initialize passport
 app.use(passport.initialize());

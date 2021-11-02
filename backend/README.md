@@ -1,10 +1,10 @@
-# Example API by Express
+# Commerce API by Express
 
 =====================================
 
 - [x] commonjs
 - [x] fs
-- [x] store in memory and reload by files.
+- [x] store in memory and mongo.
 - [x] CRUD.
 - [x] socket.io
 - [x] chat + store
@@ -14,61 +14,117 @@
 - [x] eslint config
 - [x] vscode config
 - [x] pre-condition container
-- [x] fake-token-auth + fakeauthorize
+- [x] toke auth
 - [x] refactoring
-- [ ] container
-- [ ] cluster
+- [x] container
+- [x] cluster
+- [x] uso y validacion de modelos.
+- [x] uso de DTO y DAO
+- [x] uso de repository
+- [x] injectar configuración para funcionar via secret kubernetes & swarm.
+- [x] soporte para correr pm2
 
 # DB
 
-Para el caso de uso de dbstore se usan reposositorys y como no hay DB store mongo fisica se simula cada colección de forma independiente con store files.
+Se utiliza DB mongo para prod y memory para dev.
 
 # Development
 
 
-Configura variables example:
+Configura variables ejemplo:
 
 ```
 
-sqlite.env
+mkdir log config public/upload public/images
 
-PORT=8080
-DBTYPE_PRINCIPAL="sqlite"
+configurar archivo  development.json  y production.json
 
-nosql.env
+Este archivo debe estar guardado sobre config/development.json
 
-PORT=8080
+{
+  "app": {
+    "port": 3000,
+    "site":"localhost",
+    "protocol":"http",
+    "client":{
+      "host":"localhost", => hostname para frontend CORS
+      "port":4200
+    },
+    "graphql": false,
+    "uploadfolder":"public/upload",
+    "defaultpersistence":"memory", => persistencia por default
+    "persistence":{
+      "mongo":"wmongo",
+      "memory":"memory",
+      "mysql":"wknex",
+      "sqlite":"wknex",
+      "file":"archivo-repository"
+    },
+    "db1": {
+      "user": "usuario valido",
+      "passwd": "password valido",
+      "host": "hostname valido",
+      "port": puerto valido,
+      "secure": 1,
+      "type": "mongo",
+      "connector": "mongodb",
+      "dbname": "db valida para nuestra app",
+      "schema": {
+        "users": "user-schema",
+        "credentials": "credential-schema",
+        "tokens": "token-schema",
+        "productos": "producto-schema",
+        "mensajes": "mensaje-schema",
+        "carritos": "carrito-schema",
+        "ordenes": "orden-schema"
+      }
+    },
+    "db2": {
+      "user": "user de session",
+      "passwd": "passwd session",
+      "host": "hostname session",
+      "dbname": "configrar db solo si usa session",
+      "port": 0,
+      "secure": 1,
+      "type": "mongo",
+      "connector": "mongodb"
+    },
+    "emails_providers": [
+      {
+        "user": "cuenta de un proveedor para usar de salida",
+        "passwd": "passwore de un proveedor de salida",
+        "server": "servidor de salida",
+        "port": "puerto valido de salida"
+      }
+    ],
+    "email_admin": "usuario al que le llegan los mails de envios como admin. llegan regitro y logout.. admin@dom.com. Tiene que ser un mail valido",
+    "twilio": {
+      "id": "id valido",
+      "token": "token valido",
+      "fromtel": "telefono celular valido"
+    },
+    "support_login": "",
+    "facebookid": "idfacebook",
+    "facebooksecret": "secreto facebook",
+    "facebookcallback": "http://localhost:3000/auth/facebook/callback",
+    "secret": "secret token"
+  }
+}
 
-DBTYPE_PRINCIPAL="mongo"
-DBTYPE_PRINCIPAL_USER="user"
-DBTYPE_PRINCIPAL_DBNAME="db"
-DBTYPE_PRINCIPAL_PASSWD="pass"
-DBTYPE_PRINCIPAL_HOST="server"
-DBTYPE_PRINCIPAL_PORT=puerto
+Ejecutar: 
 
+npm run dev => dev
 
-mysql.env
+npm start => prod
 
-PORT=8080
-DBTYPE_PRINCIPAL="mysql"
-DBTYPE_PRINCIPAL_USER="user"
-DBTYPE_PRINCIPAL_DBNAME="database"
-DBTYPE_PRINCIPAL_PASSWD="pass"
-DBTYPE_PRINCIPAL_HOST="server"
-DBTYPE_PRINCIPAL_PORT=puerto
+npm run pm2 => pm2 cluster
 
-
-mkdir db 
-
-npm run sqlite
-
-npm run nosql
-
-npm run mysql
-
-PD: Remember appy migrate knex for persistence
 
 ```
 
 # Run test
 
+
+npm run test
+
+Genera los reportes.
