@@ -23,14 +23,6 @@ class ProductosApi {
         return false;
     }
 
-    // findOne = async (value) => {
-    //     const exist = await this.repo.find({query:{key:'code',value:value}});
-    //     if (exist){
-    //         return true
-    //     }
-    //     return false;
-    // }
-
     add = async (producto) =>{
         const valid = this.model.validate(producto);
         if (valid){

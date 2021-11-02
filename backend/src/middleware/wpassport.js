@@ -25,7 +25,6 @@ class WPassport {
   }
 
   isValidPassword = async (user, password) => {
-    //const credential = await this.credential.findOne({ _id: user._id });
     const credential = await this.credential.find({query:{key:'id',value:user.id}});
     logger.debug("#####Credential#######")
     logger.debug(credential);
@@ -38,8 +37,6 @@ class WPassport {
 
   checkJWT = async (jwt_payload, done) => {
     try {
-      //let user = this.repo.getModel();
-      //let usuario = await user.findOne({ email: jwt_payload.email });
       logger.debug("###########CHECK JWT###########");
       let usuario = await this.repo.find({query:{key:'email',value:jwt_payload.email}});
       if (!usuario) {

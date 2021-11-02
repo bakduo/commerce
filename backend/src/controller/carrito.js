@@ -2,10 +2,6 @@
 
 const IncludeProductos = require('../util/busquedas/include-productos');
 const config = require('../config/index');
-//const providerEmail1 = config.emails[0];
-//const EmailService = require('../services/emailservice');
-//const SMService = require('../services/smsservice');
-//const sms = new SMService();
 const logger = config.logger;
 const CarritosApi = require('../api/carrito-api');
 
@@ -16,10 +12,7 @@ const CarritosApi = require('../api/carrito-api');
 class CarritoController {
 
   constructor(repository, repositoryProductos,repoorden){
-    //this.repo = repository;
-    //this.productos = repositoryProductos;
-    //this.service = new EmailService();
-    this.api = new CarritosApi(repository,repositoryProductos,repoorden);
+     this.api = new CarritosApi(repository,repositoryProductos,repoorden);
   };
 
   /**
@@ -35,7 +28,6 @@ class CarritoController {
     try {
       const user = req.user;
 
-      //let productos = await this.repo.getItems();
       let productos = await this.api.getAll();
       
       productos = productos.filter((item) => item.getCarritoSession() == user.id);
@@ -96,22 +88,7 @@ class CarritoController {
     try {
       if (req.params.id) {
         //No existe condición para agregar producto repetidos
-
-
-        //const producto = await this.productos.getId(req.params.id);
         let producto = await this.api.findOneProducto(req.params.id);
-        //control de repeticiones
-        // const search = new IncludeProductos(this.repo);
-        // const existe = await search.execute(producto.code, (item, codigo) => {
-        //   return item.code === Number(codigo);
-        // });
-        // const existe = await this.repo.include(
-        //   producto.code,
-        //   (item, codigo) => {
-        //     return item.code === Number(codigo);
-        //   }
-        // );
-
         
         if (producto) {
           const record = {
@@ -154,8 +131,6 @@ class CarritoController {
   deleteProducto = async (req, res, next) => {
     try {
       if (req.params.id) {
-        //Traer todos los productos del usuario y eliminarlos los correspondientes
-        //const carrito = await this.repo.getId(req.params.id);
         const carrito = await this.api.getOne(req.params.id);
         if (carrito) {
           const eliminado = await this.api.deleteOne(req.params.id);
@@ -196,85 +171,6 @@ class CarritoController {
              fail: 'Ocurrio un error en el sistema. No fue posible procesar su pedido.',
       });
     }
-
-    // const user = req.user;
-    // logger.info(
-    //   '###############Administrador procesa pedido#############'
-    // );
-
-    // logger.info(
-    //   '##########Deberia enviar mail de registro al administrador##############'
-    // );
-    // /*******************SMS */
-    // if (config.sms.fromtel) {
-    //   try {
-    //     const texto =
-    //       'Usted: ' +
-    //       user.nombre +
-    //       'email: ' +
-    //       user.email +
-    //       'solicito el envio de su pedido. En la brevedad nos ponemos en contacto con usted.';
-    //     logger.info('########SMS: ' + texto + '#################');
-    //     sms.send(texto, user.tel);
-
-    //     /******************Correo */
-
-    //     let productos = await this.api.getAll();
-    //     productos = productos.filter(
-    //       (item) => item.getCarritoSession() == user.id
-    //     );
-
-    //     if (productos.length <= 1) {
-    //       return res.status(500).json({
-    //         SUCCESS: false,
-    //         fail: 'Ustes no tiene los productos suficientes para realizar el envio',
-    //       });
-    //     }
-
-    //     let productosText = '';
-    //     productos.forEach((item) => {
-    //       productosText = productosText + '<li>' + item.getName() + '</li>';
-    //     });
-    //     const fechaLogin = new Date().toISOString();
-    //     this.service.initialize(providerEmail1);
-    //     this.service.setFrom('Sistemas registro de envios');
-    //     this.service.send(
-    //       'Se registro nuevo envio de ' + user.email,
-    //       config.email_to,
-    //       `
-    //             <i>Usuario solicito envio de: </i>
-    //             <br>
-    //             <ul>
-                
-    //               ${productosText}
-
-    //             </ul> 
-    //             <b> 
-    //               ${fechaLogin} 
-    //               <hr>
-    //             </b>
-    //             `
-    //     );
-    //     logger.debug(
-    //       '##########Deberia enviar mail con los datos del producto##############'
-    //     );
-    //   } catch (error) {
-    //     logger.error(`Error Al procesar pedido: ${error}`);
-    //     return res.status(500).json({
-    //       SUCCESS: false,
-    //       fail: 'Error al procesar pedido',
-    //     });
-    //   }
-    // } else {
-    //   logger.error(
-    //     '######################No hay telefono configurado para la salida del pedido#####################'
-    //   );
-    //   return res.status(500).json({
-    //     SUCCESS: null,
-    //     fail: 'No hay linea disponible para procesar el pedido',
-    //   });
-    // }
-    // return res.status(200).json({ SUCCESS: 'Order incomming...', fail: false });
   };
 
 }

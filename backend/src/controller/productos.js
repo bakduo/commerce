@@ -160,9 +160,7 @@ class ProductoController {
         return thumbail;
 
       } catch (error) {
-        // let estado = new Error('Error al realizar converción de imagen base64...')
-        // error.httpStatusCode = 400
-        // return next(estado.message);
+        
         return res.status(500).json({ status: 'Producto no es valido, verificar encoding image.' });
       }
     }else{
@@ -188,10 +186,6 @@ class ProductoController {
 
       if (req.body) {
 
-        //const search = new IncludeProductos(this.repo);
-        //const existe = await search.execute(req.body.code, (item, codigo) => {
-        //  return item.code === Number(codigo);
-        //});
           const producto = {price,name,code,description,title,stock,thumbail};
                     
           if (!this.api.isValidate(producto)){
@@ -203,7 +197,6 @@ class ProductoController {
           }
 
           const exist = await this.api.getProductoOfCode(req.body.code)
-          //console.log(exist);
           if (!exist) {
             
             const tmp1 = await this.api.add(producto);

@@ -1,23 +1,3 @@
-// Use case one producto by cart
-/*
-
-[
-  carrrito : 1,
-    {
-    producto:1
-  },
-  carrrito : 1
-  {
-    producto:2
-  },
-  carrrito : 1
-  {
-    producto:3
-  },
- ...
-]
-
-*/
 class Carrito {
   constructor() {
     this.id = -1;

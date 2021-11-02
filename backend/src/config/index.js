@@ -15,7 +15,6 @@ dotenv.config({
   path: path.resolve('./', process.env.NODE_ENV + '.env'),
 });
 //Logger
-//const supportPassport = process.env.SUPPORT_LOGIN.split(',');
 
 //https://getpino.io/#/docs/help?id=reopening
 
@@ -29,10 +28,6 @@ const logPath = cwd + '/log';
 const logger = require('pino')(
   {
     name: 'app-ecommercefake',
-    // set the own levels
-    //customLevels: levels,
-    // use only the custom levels
-    //useOnlyCustomLevels: true,
     customLevels: ['error','info','debug']
   },
   logThrough
@@ -123,15 +118,6 @@ if (process.argv.length >= 3) {
 } else {
   config.mode = 'FORK';
 }
-
-// config.db = new DBCustom({
-//   dbtype: config.server.dbtype,
-//   url: `${app.db1.connector}://${app.db1.user}:${app.db1.passwd}@${app.db1.host}:${app.db1.port}/${app.db1.dbname}`,
-//   dbname: `${app.db1.dbname}`,
-//   secure: `${app.db1.secure}`,
-//   schema: app.db1.schema,
-//   logger: config.logger,
-// });
 
 config.session = new SessionCustom({
   dbtype: config.server.dbtypesession,
