@@ -40,6 +40,7 @@ frontend/client/node_modules
 # profiling files
 frontend/client/chrome-profiler-events*.json
 frontend/client/speed-measure-plugin*.json
+frontend/client/dist.tar.gz
 
 # IDEs and editors
 frontend/client/.idea
