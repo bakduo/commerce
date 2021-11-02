@@ -69,7 +69,7 @@ const config = {
     cors: {
       server: [
         {
-          origin: `${app.client.host}:${app.client.port}`, //Para acceso desde angular front
+          origin: [`${app.client.host}:${app.client.port}`,'localhost:4200','frontend:4200'], //Para acceso desde angular front
           credentials: true,
         },
       ],
