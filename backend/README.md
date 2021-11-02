@@ -23,6 +23,8 @@
 - [x] uso de repository
 - [x] injectar configuración para funcionar via secret kubernetes & swarm.
 - [x] soporte para correr pm2
+- [x] notificacion por medio de mails.
+- [x] gestion de logs
 
 # DB
 
